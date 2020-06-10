@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-05-27T21:04:49.847806+00:00",
+  "timestamp": "2020-06-10T17:58:45.794789+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -171,12 +171,10 @@
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "Pre-RGLC"
-      ],
+      "labels": [],
       "body": "The draft only has success test vectors. Negative ones would be good, too.",
       "createdAt": "2019-11-11T15:39:27Z",
-      "updatedAt": "2020-01-23T02:57:37Z",
+      "updatedAt": "2020-05-27T21:45:08Z",
       "closedAt": null,
       "comments": []
     },
@@ -656,7 +654,7 @@
       "id": "MDU6SXNzdWU2MTYxMTI1NjI=",
       "title": "Contents of a context aren't well-defined",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/72",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "davidben",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -665,8 +663,8 @@
       ],
       "body": "This is just an editorial comment. The spec doesn't seem to define the contents of a \"context\" very clearly. Section 5 says:\r\n> A \"context\" encodes the AEAD algorithm and key in use, and manages the nonces used so that the same nonce is not used with multiple plaintexts.\r\n\r\nBut it also has an exporter secret. Then section 5.1 says:\r\n> return Context(key, nonce, exporter_secret)\r\n\r\nBut we haven't defined the `Context` function yet. I'm guessing the intent is that `Context` produces some sort of record type with those field names? But that wouldn't initialize `Context.seq` used later in 5.2. (Confusingly, this `Context` is distinct from the `context` variable which contains an `HPKEContext` structure. Maybe the latter could be renamed?)\r\n\r\nThen 5.2 lists out the contents of a \"context' more explicitly, including the first mention of a sequence number. But it omits the exporter secret again. (Should \"The sender's context MUST be used for encryption only. Similarly, the recipient's context MUST be used for decryption only.\" be rephrased? One could read that as saying export is also not okay.)\r\n\r\nThen 5.3 mentions a context having an \"exporter secret\", but this is actually the only instance of that phrase in the document.",
       "createdAt": "2020-05-11T19:05:28Z",
-      "updatedAt": "2020-05-20T15:23:44Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-27T21:44:54Z",
+      "closedAt": "2020-05-27T21:44:53Z",
       "comments": [
         {
           "author": "raphaelrobert",
@@ -681,6 +679,13 @@
           "body": "The \"context\" does seem to be related to the entire HPKE exchange from how it's constructed. Since AEADs already mean something, AEADContext would probably result in APIs calling it `HPKE_AEAD_CONTEXT` with nothing actually exposed as `HPKE_CONTEXT`. Seems renaming the existing HPKEContext would work better.",
           "createdAt": "2020-05-14T17:14:49Z",
           "updatedAt": "2020-05-14T17:14:49Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:44:53Z",
+          "updatedAt": "2020-05-27T21:44:53Z"
         }
       ]
     },
@@ -816,7 +821,7 @@
       "id": "MDU6SXNzdWU2MjE0ODc1NzI=",
       "title": "Ambiguity about Secret Export",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/83",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ocheron",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -826,8 +831,8 @@
       ],
       "body": "Section 5.3 explains secrets are exported with the KDF Expand function but the included code in the same section now calls LabeledExpand with a \"sec\" label.\r\n\r\nThe JSON test vectors contain sample results for the export function, but they match an unlabeled implementation with Expand and not LabeledExpand.",
       "createdAt": "2020-05-20T06:09:46Z",
-      "updatedAt": "2020-05-24T00:30:03Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-28T17:39:15Z",
+      "closedAt": "2020-05-27T21:44:44Z",
       "comments": [
         {
           "author": "chris-wood",
@@ -835,6 +840,20 @@
           "body": "Good catch! We missed updating the `Export` code and test vectors. ",
           "createdAt": "2020-05-24T00:30:03Z",
           "updatedAt": "2020-05-24T00:30:03Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:44:44Z",
+          "updatedAt": "2020-05-27T21:44:44Z"
+        },
+        {
+          "author": "ocheron",
+          "authorAssociation": "NONE",
+          "body": "Thank you, now all vectors pass with expected definitions.\r\nText will be clear enough, I just wasn't sure the direction you wanted.",
+          "createdAt": "2020-05-28T17:39:15Z",
+          "updatedAt": "2020-05-28T17:39:15Z"
         }
       ]
     },
@@ -861,7 +880,7 @@
       "id": "MDU6SXNzdWU2MjE4NDM0MDU=",
       "title": "Clarify DH-only KEMs in the abstract ",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/85",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -870,16 +889,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nThe draft only specifies a Diffie-Hellman-based KEM (Section 4.1). To set expectations for the implementer, we recommend stating this limitation in the abstract, e.g., by adding \"based on elliptic curve Diffie-Hellman key agreement\" at the end of the last sentence of the abstract.",
       "createdAt": "2020-05-20T15:11:31Z",
-      "updatedAt": "2020-05-20T15:23:45Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:41:45Z",
+      "closedAt": "2020-05-27T21:41:45Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:41:45Z",
+          "updatedAt": "2020-05-27T21:41:45Z"
+        }
+      ]
     },
     {
       "number": 86,
       "id": "MDU6SXNzdWU2MjE4NDM4ODk=",
       "title": "Clarify \"hybrid\" in the introduction",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/86",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -888,16 +915,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nAsymmetric and symmetric algorithms have been combined since the 1980s, e.g., in Privacy-Enhanced Mail [RFC1113], so a hybrid approach (in the sense of combining the two) can by now be considered the \"tradition\" of public-key cryptography.  We would therefore suggest replacing the first sentence with the following:\r\n\r\nEncryption schemes that combine asymmetric and symmetric algorithms have been specified and practiced since the early days of public-key cryptography (e.g., [RFC1113]).  Combining the two brings the \"best of both worlds\":  the key management advantages of asymmetric cryptography and the performance benefits of symmetric cryptography.  However, the traditional combination has been \"encrypt the symmetric key with the public key.\"  \"Hybrid\" public-key encryption schemes (HPKE), specified here, take a different combination, \"generate the symmetric key and its encapsulation with the public key.\" .",
       "createdAt": "2020-05-20T15:12:09Z",
-      "updatedAt": "2020-05-20T15:23:45Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:43:18Z",
+      "closedAt": "2020-05-27T21:43:18Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:43:18Z",
+          "updatedAt": "2020-05-27T21:43:18Z"
+        }
+      ]
     },
     {
       "number": 87,
       "id": "MDU6SXNzdWU2MjE4NDQwODM=",
       "title": "Clarify \"formally verified\"",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/87",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -906,16 +941,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nShould \"formally verified\" be \"proven secure under standard cryptographic assumptions\"?  Or is the intent indeed to enable tools that check correctness of an implementation?",
       "createdAt": "2020-05-20T15:12:25Z",
-      "updatedAt": "2020-05-20T15:23:45Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:42:11Z",
+      "closedAt": "2020-05-27T21:42:10Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:42:10Z",
+          "updatedAt": "2020-05-27T21:42:10Z"
+        }
+      ]
     },
     {
       "number": 88,
       "id": "MDU6SXNzdWU2MjE4NDQ0NjU=",
       "title": "Clarify unsigned property of encode_big_endian",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/88",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -924,16 +967,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nSection 3:  Definition of encode_big_endian:  Add \"unsigned\" before \"integer\" if this is the intent (so that the set of encodable n-byte integers clearly includes 0 through 2^{8n}-1).",
       "createdAt": "2020-05-20T15:12:55Z",
-      "updatedAt": "2020-05-20T15:23:45Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:42:18Z",
+      "closedAt": "2020-05-27T21:42:17Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:42:17Z",
+          "updatedAt": "2020-05-27T21:42:17Z"
+        }
+      ]
     },
     {
       "number": 89,
       "id": "MDU6SXNzdWU2MjE4NDUyNTc=",
       "title": "Clarify additional key material in authenticated modes",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/89",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -942,16 +993,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nSection 5:\r\n \"we include two authenticated variants .\":  We would also suggest mentioning that these variants also contribute additional keying material to the encryption operation.  See also discussion in Section 8.1.\r\n\r\nAfter the sentence, \"the constructions described here presume .\", mention that the recipient also needs a way to determine which of its public keys was used for the encapsulation operation (if the recipient has more than one public key).  Also add a reference to Section 9 which addresses the corresponding issues for message encoding.",
       "createdAt": "2020-05-20T15:13:56Z",
-      "updatedAt": "2020-05-20T15:23:46Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:44:08Z",
+      "closedAt": "2020-05-27T21:44:07Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:44:07Z",
+          "updatedAt": "2020-05-27T21:44:07Z"
+        }
+      ]
     },
     {
       "number": 90,
       "id": "MDU6SXNzdWU2MjE4NDU4NTA=",
       "title": "Include mode as KeySchedule input",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/90",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -960,16 +1019,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nSection 5.1:\r\n\r\n \"mode\" should also be listed as a key schedule input.",
       "createdAt": "2020-05-20T15:14:41Z",
-      "updatedAt": "2020-05-20T15:23:46Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:43:10Z",
+      "closedAt": "2020-05-27T21:43:10Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:43:10Z",
+          "updatedAt": "2020-05-27T21:43:10Z"
+        }
+      ]
     },
     {
       "number": 91,
       "id": "MDU6SXNzdWU2MjE4NDcyMTI=",
       "title": "Fix some nits",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/91",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -978,16 +1045,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\n \"assumed that the sender\" --> \"assured that the sender\"\r\n\r\nSection 8.2:\r\n\r\n\"KEM public key pkR\" --> \"KEM public key \"pkR\"\"\r\n\r\n\"ciphertext enc\" --> \"encapsulated key enc\" (two occurrences).  \"Ciphertext\" is used elsewhere in the draft to refer to the AEAD output.\r\n\r\nSection 8.3:  There is a non-normative (lower-case) \"should\" in the first sentence.  (Contrasting against a normative/upper-case \"SHOULD\" in the first sentence of 8.4.)  Should this \"should\" be \"SHOULD\"?\r\n\r\nSection 8.7:  There are missing quotes around \"(enc2, ciphertext2, enc, ciphertext)\".",
       "createdAt": "2020-05-20T15:16:28Z",
-      "updatedAt": "2020-05-20T15:23:46Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:42:03Z",
+      "closedAt": "2020-05-27T21:42:03Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:42:03Z",
+          "updatedAt": "2020-05-27T21:42:03Z"
+        }
+      ]
     },
     {
       "number": 92,
       "id": "MDU6SXNzdWU2MjE4NDc0MjI=",
       "title": "Harmonize label values",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/92",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -996,16 +1071,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nThe \"label\" argument to LabeledExtract is being used in some cases to identify the output, in one case to identify the input, and in one case to identify the intent.  We suggest harmonizing on the former, and also consistently suffixing the output variable name with \"_hash\" when the purpose of the extraction is to produce a hash of the input.  This would result in the following statements being updated:\r\n\r\ninfo_hash = LabeledExtract(zero(Nh), \"info_hash\", info) // new label\r\n\r\npsk_hash = LabeledExtract(zero(Nh), \"psk_hash\", psk) // new output name\r\n\r\nsecret = LabeledExtract(psk_hash, \"secret\", zz) // new input name and label",
       "createdAt": "2020-05-20T15:16:46Z",
-      "updatedAt": "2020-05-20T15:23:46Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:41:57Z",
+      "closedAt": "2020-05-27T21:41:56Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:41:56Z",
+          "updatedAt": "2020-05-27T21:41:56Z"
+        }
+      ]
     },
     {
       "number": 93,
       "id": "MDU6SXNzdWU2MjE4NDgwNTQ=",
       "title": "Avoid confusing normative language",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/93",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1014,8 +1097,8 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nSection 5.1.3: The lower-case \"must\" in \"the sender must be the other\" might be confused with normative \"MUST\".  Suggest using a different word or changing to the normative form.",
       "createdAt": "2020-05-20T15:17:30Z",
-      "updatedAt": "2020-05-20T15:23:47Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-27T21:41:22Z",
+      "closedAt": "2020-05-27T21:41:22Z",
       "comments": []
     },
     {
@@ -1023,7 +1106,7 @@
       "id": "MDU6SXNzdWU2MjE4NDg4MTU=",
       "title": "Clarify pseudocode and define undefined operands",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/94",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1032,8 +1115,8 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nSection 5.2.:\r\n\r\nThe symbol \"<<\" isn't defined, but assuming it means \"shift left by a specified number of bits\", the number of bits to shift should be \"8*Nn\" rather than \"Nn\".\r\n\r\nDoes \"overflow\" in the third paragraph refer to the same condition as \"wrap\" in the fifth paragraph?  If so, the text should be combined and a single term used for consistency.  If not, the differences between the two requirements should be explained.  We would also suggest adding a note indicating that the reference code assumes the sequence number is the same length as the nonce.\r\n\r\nThe use of \"Nonce\" (capitalized) as a function and \"nonce\" (lower case) as a value may be confusing.  We suggest instead that the function be named \"ComputeNonce\" or similar.\r\n\r\nOn a similar object-oriented programming note, it should be stated that the underlying \"Seal\" and \"Open\" functions are the ones determined by the  \"aead_id\" property.",
       "createdAt": "2020-05-20T15:18:29Z",
-      "updatedAt": "2020-05-20T15:23:47Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-27T21:41:15Z",
+      "closedAt": "2020-05-27T21:41:15Z",
       "comments": []
     },
     {
@@ -1041,7 +1124,7 @@
       "id": "MDU6SXNzdWU2MjE4NDk0MDQ=",
       "title": "Fix some references",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/95",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1050,16 +1133,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\n[ANSI]:  Add \"X9.63\" to title.\r\n\r\n[BNT19] and other references as needed:  Add authors' names.\r\n\r\n[MAEA10]:  Use \"authoritative\" URI for long-term stability: https://ieeexplore.ieee.org/abstract/document/5604194/.",
       "createdAt": "2020-05-20T15:19:13Z",
-      "updatedAt": "2020-05-20T15:23:47Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:41:51Z",
+      "closedAt": "2020-05-27T21:41:50Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:41:50Z",
+          "updatedAt": "2020-05-27T21:41:50Z"
+        }
+      ]
     },
     {
       "number": 96,
       "id": "MDU6SXNzdWU2MjE4NTA2MjY=",
       "title": "Clarify test vector labels",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/96",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1068,16 +1159,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nAppendix:  \"pkR\", \"pkS\" values are given.  These are presumably the same as the marshalled versions \"pkRm\", \"pkSm\", this should be stated for completeness.  (In contrast, both \"pKE\" and the equivalent \"enc\" are shown.)",
       "createdAt": "2020-05-20T15:20:50Z",
-      "updatedAt": "2020-05-20T15:23:47Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-27T21:42:48Z",
+      "closedAt": "2020-05-27T21:42:47Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #101.",
+          "createdAt": "2020-05-27T21:42:47Z",
+          "updatedAt": "2020-05-27T21:42:47Z"
+        }
+      ]
     },
     {
       "number": 97,
       "id": "MDU6SXNzdWU2MjE4NTA5NjI=",
       "title": "Cite Shoup for identity misbinding prevention in 8.2",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/97",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1086,8 +1185,8 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\n \"avoid identity mis-binding issues\":  Perhaps also note that including the public key and the encapsulated key as inputs to key derivation can help with the security proof.  [Shoup] makes this observation in Section 15.6.1.\r\n\r\n[Shoup]  @article{shoup2001proposal,\r\n  title={A proposal for an ISO standard for public key encryption (version 2.1)},\r\n  author={Shoup, Victor},\r\n  journal={IACR e-Print Archive},\r\n  volume={112},\r\n  year={2001}\r\n}\r\n",
       "createdAt": "2020-05-20T15:21:19Z",
-      "updatedAt": "2020-05-20T15:23:47Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-27T21:41:08Z",
+      "closedAt": "2020-05-27T21:41:08Z",
       "comments": []
     },
     {
@@ -1104,16 +1203,24 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nSection 8.1:  \"A full proof of post-quantum security .\".  Although we understand that a full proof of post-quantum security may not be achievable within the timeline of this draft's publication, we would nevertheless recommend some additional discussion on what might be desirable to prove.  In the draft, the PSK is employed as an authentication factor, so presumably the proof being contemplated would be that authentication in the modes involving PSKs remains secure against a quantum computer.  A stronger property would be more attractive:  that encryption in the PSK modes remains secure against a quantum computer, whether the KEM itself is post-quantum or not.  If the authors consider this property plausible, then it should be mentioned here as a goal for security analysis.  If not, then the reasons for not targeting this property should also be given.\r\n\r\n",
       "createdAt": "2020-05-20T15:21:50Z",
-      "updatedAt": "2020-05-20T15:23:48Z",
+      "updatedAt": "2020-05-29T17:50:19Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "These are some excellent points!\r\n\r\n### PSK is also strengthening confidentiality\r\nIndeed we are only talking about authentication with respect to the PSK:\r\n* [Creating the Encryption Context](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#creating-the-encryption-context)\r\n```\r\nIf the psk and pskID arguments are provided, then the recipient is\r\nassured that the sender held the PSK.\r\n```\r\n* [Authentication using a Pre-Shared Key](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#authentication-using-a-pre-shared-key-mode-psk) and [Authentication using both a PSK and an Asymmetric Key](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#authentication-using-both-a-psk-and-an-asymmetric-key-mode-auth-psk)\r\n```\r\nThis variant extends the base mechanism by allowing the recipient to\r\nauthenticate that the sender possessed a given pre-shared key (PSK).\r\n```\r\n\r\nThe analysis I did in CryptoVerif shows that confidentiality remains if the KEM keys are compromised (or if the KEM keys are not compromised but the PSK is compromised). So we should indeed add this as a desired security property, with pretty much the same reasoning as employed by WireGuard, see [Section 5.2 in the WireGuard whitepaper](https://hyp.is/eMrNnKHTEeqR-TeuWEsFDA/www.wireguard.com/papers/wireguard.pdf).\r\n\r\n### Authentication provided by PSK in quantum setting\r\nIn the same way, the analysis shows that authentication remains if KEM keys are compromised, or if the PSK is compromised but not the KEM keys.\r\n\r\nSo, in a way, this is just about discussing desired security properties in different compromise cases, where certain compromise cases are especially relevant because of quantum adversaries.\r\n\r\n### Minor nit\r\nBy the way, in [Security Properties](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#security-properties-sec-properties), we should add that the PSK mode is also providing sender authentication.\r\n```\r\nSender authentication: Proof of sender origin for Auth and AuthPSK modes\r\n```\r\nLater, in [Metadata Protection](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#metadata-protection), PSK mode is correctly listed as authenticated mode.\r\n```\r\nThe authenticated modes of HPKE (PSK, Auth, AuthPSK) require [\u2026]\r\n```\r\n\r\nI'll try to find time to draft a pull request.",
+          "createdAt": "2020-05-29T17:50:19Z",
+          "updatedAt": "2020-05-29T17:50:19Z"
+        }
+      ]
     },
     {
       "number": 100,
       "id": "MDU6SXNzdWU2MjIwNzk1ODM=",
       "title": "Inconsistent use of X25519 vs Curve25519",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/100",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "davidben",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -1122,8 +1229,8 @@
       ],
       "body": "The HPKE draft refers to \"Curve25519\" and \"DHKEM(Curve25519, HKDF-SHA256)\" throughout the draft, but then section 8.8 mentions DHKEM-X25519.\r\n\r\nI believe X25519 is correct here. RFC7748 defines \"curve25519\" as a particular Montgomery curve. It then defines \"X25519\" as a Diffie-Hellman primitive on top of curve25519, with particular encodings and everything else. HPKE is using the Diffie-Hellman primitive, so it should use X25519. As a bonus, it's shorter and \"DHKEM(Curve25519, HKDF-SHA256)\" is already a mouthful. :-)",
       "createdAt": "2020-05-20T20:56:34Z",
-      "updatedAt": "2020-05-23T14:13:02Z",
-      "closedAt": null,
+      "updatedAt": "2020-06-03T15:35:56Z",
+      "closedAt": "2020-05-27T21:40:35Z",
       "comments": [
         {
           "author": "chris-wood",
@@ -1131,8 +1238,202 @@
           "body": "Yep, we mean X25519 -- thanks for pointing this out!",
           "createdAt": "2020-05-23T14:13:01Z",
           "updatedAt": "2020-05-23T14:13:01Z"
+        },
+        {
+          "author": "dvorak42",
+          "authorAssociation": "NONE",
+          "body": "Looks like the section labels for the test vectors didn't get updated? (They still read DHKEM(Curve25519...))",
+          "createdAt": "2020-06-03T13:56:24Z",
+          "updatedAt": "2020-06-03T13:56:24Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@dvorak42 doh! I missed that. Thanks for pointing it out. I'll update the labels in a future change.",
+          "createdAt": "2020-06-03T15:35:56Z",
+          "updatedAt": "2020-06-03T15:35:56Z"
         }
       ]
+    },
+    {
+      "number": 102,
+      "id": "MDU6SXNzdWU2Mjc4ODcxNDc=",
+      "title": "Limits on Inputs to LabeledExtract and LabeledExpand",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/102",
+      "state": "OPEN",
+      "author": "rozbb",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I'm trying to remove all allocation from my implementation, and there's really only 1 snag I'm hitting: LabeledExtract and LabeledExpand do a `concat` operation before passing to their respective HKDF functions, and there isn't always an upper bound on the size of the concatenated result. Specifically, there's\r\n```\r\nKeySchedule(info, psk, pskID):\r\n    LabeledExtract(..., info)\r\n    LabeledExtract(..., psk)\r\n    LabeledExtract(..., pskID)\r\nContext.Export(exporter_context):\r\n    LabeledExpand(..., exporter_context, ...)\r\n```\r\n\r\nIf there were a (reasonably small) upper bound on the sizes of `info`, `psk`, `pskID`, and `exporter_context`, then it would be trivial to implement HPKE without allocation.\r\n\r\nI've thought about \"streaming\" the input into the above functions, instead of sending a concatenated bytestring. This could theoretically work for HKDF-Extract with SHA256, since it's an MD hash, but this doesn't work generically. Also the definition of HKDF-Expand does not admit a way to stream in the `info` string.",
+      "createdAt": "2020-05-31T04:08:40Z",
+      "updatedAt": "2020-06-07T21:14:31Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "A side effect of this would be that the `Psk` and `PskBundle` (containing a PSK and PSK ID) types in the Rust implementation would not need to allocate and also not need cumbersome lifetime specifiers, since they could just maintain a fixed-size buffer of their contents.",
+          "createdAt": "2020-05-31T04:39:12Z",
+          "updatedAt": "2020-05-31T04:39:45Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "What would be \"reasonably small\" here? TLS allows 16-bit PSK identities and exported contexts, for example. ",
+          "createdAt": "2020-05-31T13:26:21Z",
+          "updatedAt": "2020-05-31T13:26:21Z"
+        },
+        {
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "If `pskID` were 2 bytes (or an integer that we explicitly encode) and everything else were at most size `Nh`, that would be sufficient",
+          "createdAt": "2020-05-31T16:48:27Z",
+          "updatedAt": "2020-05-31T16:48:27Z"
+        },
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Adding the following just so that we remember that in case we introduce limits: If in the end the PSK's size is limited to smth strictly smaller than `Nb` (block size of underlying hash function), we could get rid of the hashing step for the PSK.",
+          "createdAt": "2020-06-02T13:26:59Z",
+          "updatedAt": "2020-06-02T13:26:59Z"
+        },
+        {
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Update: this change may not be necessary. It shouldn't be hard to get HKDF-Expand and HKDF-Extract to work this way without allocating.\r\n\r\nWaiting on https://github.com/RustCrypto/KDFs/pull/34",
+          "createdAt": "2020-06-07T21:14:30Z",
+          "updatedAt": "2020-06-07T21:14:30Z"
+        }
+      ]
+    },
+    {
+      "number": 103,
+      "id": "MDU6SXNzdWU2MzAxNTg0NzY=",
+      "title": "Typo for Single-Shot and clarification on AEAD binding to Context.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/103",
+      "state": "OPEN",
+      "author": "dvorak42",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "In section 5.1, might be useful to have return KeySchedule/Context take in the AEAD, to make it clear that a Context is bound to a particular AEAD.\r\nIn section 6, Seal<MODE> calls Setup<MODE>I instead of Setup<MODE>S.\r\n\r\n",
+      "createdAt": "2020-06-03T16:49:56Z",
+      "updatedAt": "2020-06-03T16:49:56Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 104,
+      "id": "MDU6SXNzdWU2MzAyOTU5NzE=",
+      "title": "Use I2OSP instead of encode_big_endian",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/104",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "See https://tools.ietf.org/html/rfc8017.",
+      "createdAt": "2020-06-03T20:15:55Z",
+      "updatedAt": "2020-06-03T20:15:55Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 105,
+      "id": "MDU6SXNzdWU2MzAyOTc1ODY=",
+      "title": "Clarify KEM shared secret for AuthEncap/Decap",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/105",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "> - Section 4: the definitions of AuthEncap and AuthDecap contain words to the\r\n>   effect, 'the KEM shared secret key is known only to the holder of the\r\n>   private key \"skS\".' It would be more accurate to say , 'the KEM shared\r\n>   secret key was generated by the holder of the private key \"skS\"'.",
+      "createdAt": "2020-06-03T20:18:05Z",
+      "updatedAt": "2020-06-03T20:18:05Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 106,
+      "id": "MDU6SXNzdWU2MzAyOTgzNjM=",
+      "title": "Note that DHKEM's Unmarshal function can fail",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/106",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-06-03T20:19:08Z",
+      "updatedAt": "2020-06-03T20:19:08Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 107,
+      "id": "MDU6SXNzdWU2MzAzMDU4NjM=",
+      "title": "Nits from Riad",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/107",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "> - Section 5.1.3: it would be nice to include a reference or citation for\r\n>   unknown key share attacks.\r\n>\r\n> - Section 5.2: is there a reason to put the word \"amortize\" in quotes? \r\n>\r\n> - Section 7.1.2: it might be worth mentioning here that [keyagreement] also\r\n>   includes checking that the public key is not the identity point.\r\n>\r\n> - Section 7.1.2: is there a reason to recommend either checking for a nonzero \r\n>   scalar or checking for a non-identity DH output? Checking the latter covers\r\n>   the former and also covers the check from my prior comment. Moreover, it is\r\n>   not clear to me that checking the scalar is useful for the recipient, since\r\n>   this is essentially just checking that their long-term secret is nonzero.\r\n>\r\n> - Section 8.1: the sentence \"In particular, the KDFs and DH groups...\" might\r\n>   want to clarify that this statement is true only when these primitives are\r\n>   used as specified. The concern is that HKDF is only indifferentiable under\r\n>   some restrictions on salt length (for reasons noted in Section 8.3).",
+      "createdAt": "2020-06-03T20:31:19Z",
+      "updatedAt": "2020-06-03T20:41:08Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 108,
+      "id": "MDU6SXNzdWU2MzAzMTIyODI=",
+      "title": "Bind DHKEM labels to the group",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/108",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "> - Section 4.1: this may be paranoia, but it would be slightly nicer to include\r\n>   the DH group name in the label arguments of LabeledExtract and LabeledExpand\r\n>   to ensure that invocations from different DHKEM instantiations are orthogonal.",
+      "createdAt": "2020-06-03T20:42:17Z",
+      "updatedAt": "2020-06-03T20:42:17Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 109,
+      "id": "MDU6SXNzdWU2MzAzNTM4MTA=",
+      "title": "Add acknowledgements",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/109",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Benjamin Lipp, David Benjamin, Benjamin Beurdouche, Riad Wahby, Kevin Jacobs, Michael Rosenberg, Michael Scott, Raphael Robert, and probably more!",
+      "createdAt": "2020-06-03T21:45:15Z",
+      "updatedAt": "2020-06-03T21:45:15Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 110,
+      "id": "MDU6SXNzdWU2MzY0MzI4NDY=",
+      "title": "Clarify decryption failure cases",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/110",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The only way an endpoint notices that decryption fails is if AEAD decryption fails. This doesn't seem to be a problem, though we should probably note it for clarity's sake.",
+      "createdAt": "2020-06-10T17:42:34Z",
+      "updatedAt": "2020-06-10T17:42:34Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -7008,24 +7309,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDE5ODUzMzY3",
       "title": "Defined DeriveKeyPair",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/79",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rozbb",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Currently, HPKE exposes no way of deriving a key pair given random bytes. This functionality is necessary in MLS (in order to have multiple participants derive their ancestor nodes' secret keys). I propose the use of `UnmarshalSk` to do precisely this.\r\n\r\n`UnmarshalSk` need not be a total function. In NIST curves, for example, the `Octet-String-to-Field-Element` function (defined in [SECG](https://secg.org/sec1-v2.pdf)) will return \"invalid\" for inputs that represent integers that are greater than or equal to the modulus. I haven't written it anywhere, but I would like to recommend that any end users who want to call `UnmarshalSk` on some deterministically derived bytes use a KDF chain to do rejection sampling.",
       "createdAt": "2020-05-19T03:25:25Z",
-      "updatedAt": "2020-05-22T02:49:02Z",
+      "updatedAt": "2020-06-10T17:58:17Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
-      "baseRefOid": "bf2725770014b7cd242925635dbf602715fce966",
+      "baseRefOid": "d1e58f3d89c3790fef15c756c6279d0811c6f7ab",
       "headRepository": "rozbb/draft-irtf-cfrg-hpke",
       "headRefName": "unmarshal_sk",
-      "headRefOid": "66b06bf6f80f281a8db17c017ea566a2c3d4900c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "b3f9bd7644495a578d9cdbca3a2b5f489a7069b3",
+      "closedAt": "2020-06-10T17:58:17Z",
+      "mergedAt": "2020-06-10T17:58:17Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "10c447eb233e7ec057905af544c100288ddca7ea"
+      },
       "comments": [
         {
           "author": "rozbb",
@@ -7061,6 +7364,27 @@
           "body": "Another clarification I just realized while implementing: This addition means that there is some KEX functionality that is dependent on the choice of KDF. I think it's obvious that it's the DHKEM's KDF we use for `DeriveKeyPair`, but it could be clearer. It should be made clearer in general which KDF is being used at any time.",
           "createdAt": "2020-05-22T02:49:02Z",
           "updatedAt": "2020-05-22T02:49:02Z"
+        },
+        {
+          "author": "ocheron",
+          "authorAssociation": "NONE",
+          "body": "For DHKEM implementations, you restrict the length of ikm to be Nsk.\r\nThis is needed for X25519/X448, using identity function.\r\n\r\nAt KEM level (the general interface), Nsk is also introduced but the length of ikm is not restricted.\r\nIs this intended?",
+          "createdAt": "2020-06-01T19:38:50Z",
+          "updatedAt": "2020-06-01T19:38:50Z"
+        },
+        {
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I didn't really have a reason for this other than a general hesitation to overspecify the protocol. But now that I think about it, I think this would be good for consistency. It also shouldn't hurt security at all, since we're still requiring the appropriate amount of entropy.",
+          "createdAt": "2020-06-01T20:36:22Z",
+          "updatedAt": "2020-06-01T20:36:22Z"
+        },
+        {
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Explanation of the last commit: \"partial public key validation\" is the same thing as \"full public key validation\", except for a missing low-order check on the input point. This check is irrelevant for prime-order curves such as the NIST P- curves.",
+          "createdAt": "2020-06-02T20:36:15Z",
+          "updatedAt": "2020-06-02T20:36:15Z"
         }
       ],
       "reviews": [
@@ -7080,15 +7404,494 @@
               "originalPosition": 135,
               "body": "```suggestion\r\ndef DeriveKeyPair(ikm):\r\n  prk = LabeledExtract(zero(0), \"keypair\", ikm)\r\n  sk = \"invalid\"\r\n  counter = 1\r\n  while sk == \"invalid\":\r\n    label = concat(\"candidate \", encode_big_endian(counter, 1))\r\n    bytes = Expand(prk, label, Nsk)\r\n    bytes[Nsk-1] = bytes[Nsk-1] & bitmask\r\n    sk = Octet-String-to-Field-Element(bytes)\r\n    counter += 1\r\n  return (sk, pk(sk))\r\n```",
               "createdAt": "2020-05-19T22:44:18Z",
-              "updatedAt": "2020-05-22T02:00:06Z"
+              "updatedAt": "2020-06-08T16:21:02Z"
             },
             {
               "originalPosition": 138,
               "body": "```suggestion\r\nwhere bitmask is defined to be 0xFF for P-256 and P-384, and 0x01 for P-521, and\r\n`Octet-String-to-Field-Element` is as defined in {{SECG}}, Section 2.3.6.\r\n```",
               "createdAt": "2020-05-19T22:45:37Z",
-              "updatedAt": "2020-05-22T02:00:06Z"
+              "updatedAt": "2020-06-08T16:21:02Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIyOTY4ODky",
+          "commit": {
+            "abbreviatedOid": "5c0cfa8"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-02T18:55:10Z",
+          "updatedAt": "2020-06-02T18:55:11Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "The Unmarshal function defined by SECG can return the point at infinity. Worth considering if you want to explicitly disallow that.",
+              "createdAt": "2020-06-02T18:55:11Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIyOTc5NTA3",
+          "commit": {
+            "abbreviatedOid": "5c0cfa8"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-02T19:09:40Z",
+          "updatedAt": "2020-06-02T19:09:40Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "This is what the current spec does, I'm just more explicit about it here.\r\n\r\nThat said, I can share some thoughts.\r\n* The Unmarshal procedure should not really be used for deriving keys, but for reconstructing saved keys from a previous session. If Unmarshal produces a bad key, then that means you somehow generated a bad key in a previous session or the key was tampered with.\r\n* The only way to generate a bad keypair is by giving to DeriveKeypair 0 or p (in the case of X25519), or an HKDF preimage of 0 (in the case of P- curves)\r\n* A point at infinity must be caught at the DH stage anyway\r\n\r\nWould it make sense to add an HKDF step to the X25519 DeriveKeyPair? It would be nice to claim that it's computationally infeasible to derive a bad keypair using DeriveKeyPair",
+              "createdAt": "2020-06-02T19:09:40Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIyOTkzMTMz",
+          "commit": {
+            "abbreviatedOid": "5c0cfa8"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-02T19:28:29Z",
+          "updatedAt": "2020-06-02T19:28:30Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "I'm worried about an adversary sending the point at infinity maliciously. MLS previously disallowed infinity, but now it won't",
+              "createdAt": "2020-06-02T19:28:29Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIzMDAyMzUz",
+          "commit": {
+            "abbreviatedOid": "5c0cfa8"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-02T19:42:20Z",
+          "updatedAt": "2020-06-02T19:42:21Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "Are you specifically concerned about an adversary giving the point-at-infinity as a DH pubkey? Doesn't the \"Validation of Inputs and Outputs\" section below the \"DeriveKeyPair\" section cover this?",
+              "createdAt": "2020-06-02T19:42:20Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIzMDEwODc2",
+          "commit": {
+            "abbreviatedOid": "0d46e9c"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-02T19:54:58Z",
+          "updatedAt": "2020-06-02T19:54:59Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "Yes. Ah, I didn't see that before! Why is it \"one of the following checks\" and not \"both\"?",
+              "createdAt": "2020-06-02T19:54:58Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIzMDIwMzI0",
+          "commit": {
+            "abbreviatedOid": "0d46e9c"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-02T20:09:09Z",
+          "updatedAt": "2020-06-02T20:09:10Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "The \"full public-key validation on all public key inputs\" includes a point-at-infinity check and a valid-point check. If you're guaranteed that the input point is valid and has prime order (this follows from non-identity because the P- curves are all prime order), then the two checks mentioned are equivalent.",
+              "createdAt": "2020-06-02T20:09:09Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIzMDI0ODU2",
+          "commit": {
+            "abbreviatedOid": "0d46e9c"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-02T20:15:58Z",
+          "updatedAt": "2020-06-02T20:15:58Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "That's not clear to me. Probably worth re-iterating that \"full validation\" means \"coordinates are field elements, point is on curve, and point is not infinity\"",
+              "createdAt": "2020-06-02T20:15:58Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIzMDgxNzM3",
+          "commit": {
+            "abbreviatedOid": "ef0139f"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-02T21:48:54Z",
+          "updatedAt": "2020-06-02T21:48:54Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIzNjg0MjMz",
+          "commit": {
+            "abbreviatedOid": "2c32a2f"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2020-06-03T15:42:19Z",
+          "updatedAt": "2020-06-03T18:02:23Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\r\n  - DeriveKeyPair(ikm): Derive a key pair `(sk, pk)` from the byte string `ikm` of length `Nsk`\r\n```",
+              "createdAt": "2020-06-03T15:42:19Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\n  - Unmarshal(enc): Parse the byte string `enc` of length `Npk` to recover a\r\n```",
+              "createdAt": "2020-06-03T15:42:53Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 110,
+              "body": "```suggestion\r\nFor P-256, P-384 and P-521, the Marshal function of the\r\n```",
+              "createdAt": "2020-06-03T15:44:04Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 115,
+              "body": "```suggestion\r\nFor X25519 and X448, the Marshal and Unmarshal functions\r\n```",
+              "createdAt": "2020-06-03T15:44:17Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 124,
+              "body": "```suggestion\r\nFor P-256, P-384 and P-521, the DeriveKeyPair function of the\r\n```",
+              "createdAt": "2020-06-03T15:46:10Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 145,
+              "body": "```suggestion\r\nFor X25519 and X448, the DeriveKeyPair function performs\r\n```",
+              "createdAt": "2020-06-03T15:46:19Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 151,
+              "body": "Why do we need to extract from `ikm = random(Nsk)`?",
+              "createdAt": "2020-06-03T15:48:02Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 151,
+              "body": "Also, this is... interesting. It's not clear to me whether we should clamp the output `sk`, per https://cr.yp.to/ecdh.html, or assume that x25519 implementations handle this for us per RFC7748. ",
+              "createdAt": "2020-06-03T15:50:27Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIzODc3NTQ5",
+          "commit": {
+            "abbreviatedOid": "2c32a2f"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-03T19:47:40Z",
+          "updatedAt": "2020-06-03T19:47:41Z",
+          "comments": [
+            {
+              "originalPosition": 151,
+              "body": "will clamp",
+              "createdAt": "2020-06-03T19:47:41Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIzODg1MTc2",
+          "commit": {
+            "abbreviatedOid": "dd5f4ae"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-03T19:59:06Z",
+          "updatedAt": "2020-06-03T19:59:06Z",
+          "comments": [
+            {
+              "originalPosition": 151,
+              "body": "Let's leave it as-is for now, and wait to hear what others think? I'm fine to be in the rough here.",
+              "createdAt": "2020-06-03T19:59:06Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2MjM4NTYw",
+          "commit": {
+            "abbreviatedOid": "dd5f4ae"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-08T13:31:54Z",
+          "updatedAt": "2020-06-08T13:31:55Z",
+          "comments": [
+            {
+              "originalPosition": 151,
+              "body": "I am comfortable assuming RFC 7748 here, thus not doing clamping.",
+              "createdAt": "2020-06-08T13:31:55Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2MjUxNzQx",
+          "commit": {
+            "abbreviatedOid": "7c4139c"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-08T13:39:42Z",
+          "updatedAt": "2020-06-08T13:49:23Z",
+          "comments": [
+            {
+              "originalPosition": 153,
+              "body": "Where does this value come from?",
+              "createdAt": "2020-06-08T13:39:42Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 151,
+              "body": "We need `LabeledExtract` because `ikm` isn't guaranteed to be `random(Nsk)`.  For example, it might be some input from MLS.",
+              "createdAt": "2020-06-08T13:41:10Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 160,
+              "body": "Why is the `_keypair` necessary?  Suggest just using `desc`.",
+              "createdAt": "2020-06-08T13:42:48Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            },
+            {
+              "originalPosition": 142,
+              "body": "It seems like it would be clearer to use `sk == 0` instead of `sk < 1`, since `sk` is unsigned.",
+              "createdAt": "2020-06-08T13:49:18Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2MjcyMzg3",
+          "commit": {
+            "abbreviatedOid": "90e8aaa"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-08T14:00:29Z",
+          "updatedAt": "2020-06-08T14:00:29Z",
+          "comments": [
+            {
+              "originalPosition": 153,
+              "body": "This is because the scalar size for P-521 is 521 bits, or 65 bytes plus 1 bit. In order to get a scalar in this range, we have to generate 66 bytes and clear the top 7 bits. Otherwise the rejection sampling will fail each iteration with probability 254/256.",
+              "createdAt": "2020-06-08T14:00:29Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2MjgyODcx",
+          "commit": {
+            "abbreviatedOid": "aadb2d6"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-08T14:11:30Z",
+          "updatedAt": "2020-06-08T14:11:30Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "I changed this to fixed strings for each curve family. Thoughts?",
+              "createdAt": "2020-06-08T14:11:30Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2MjgzNzUx",
+          "commit": {
+            "abbreviatedOid": "90e8aaa"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-08T14:12:23Z",
+          "updatedAt": "2020-06-08T14:12:23Z",
+          "comments": [
+            {
+              "originalPosition": 151,
+              "body": "Yeah, I forgot we meant to export this function for MLS. I'm fine with extract as is then.",
+              "createdAt": "2020-06-08T14:12:23Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2Mjg2NTYy",
+          "commit": {
+            "abbreviatedOid": "90e8aaa"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-08T14:15:20Z",
+          "updatedAt": "2020-06-08T14:15:20Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "Does this mean that `ikm` has at least `Nsk` bytes of entropy? (That would seem to contradict the need for extract, I think.)",
+              "createdAt": "2020-06-08T14:15:20Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2Mjg3ODY3",
+          "commit": {
+            "abbreviatedOid": "90e8aaa"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-08T14:16:38Z",
+          "updatedAt": "2020-06-08T14:16:39Z",
+          "comments": [
+            {
+              "originalPosition": 152,
+              "body": "Can we use the curve name instead of \"nistp\"?",
+              "createdAt": "2020-06-08T14:16:39Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2Mjg4MTU4",
+          "commit": {
+            "abbreviatedOid": "90e8aaa"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-08T14:16:57Z",
+          "updatedAt": "2020-06-08T14:16:57Z",
+          "comments": [
+            {
+              "originalPosition": 172,
+              "body": "Same comment here: can we use the group name?",
+              "createdAt": "2020-06-08T14:16:57Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2Mzk5Njky",
+          "commit": {
+            "abbreviatedOid": "972da1e"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-08T16:14:32Z",
+          "updatedAt": "2020-06-08T16:14:32Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "(Chatted offline, to resolve with a slight tweak of text)",
+              "createdAt": "2020-06-08T16:14:32Z",
+              "updatedAt": "2020-06-08T16:21:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI2NDEwODc5",
+          "commit": {
+            "abbreviatedOid": "b3f9bd7"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-08T16:28:10Z",
+          "updatedAt": "2020-06-08T16:28:10Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDI4Mjk5NzY4",
+          "commit": {
+            "abbreviatedOid": "b3f9bd7"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-10T17:57:31Z",
+          "updatedAt": "2020-06-10T17:57:31Z",
+          "comments": []
         }
       ]
     },
@@ -7278,24 +8081,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDIyMzQ0NzUw",
       "title": "Address most of the nits from Verisign's review.",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/101",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #100, #97, #95, #93, #92, #91, #90, #89, #88, #87, #86, and #55. \r\n\r\nEdit: Updated to include #94 and #72.\r\n\r\nI'll update the test vectors (and their labels) in a separate change that aligns with a change in the cisco/go-hpke codebase. \r\n\r\ncc @blipp, @rozbb, @davidben for visibility",
       "createdAt": "2020-05-24T00:26:58Z",
-      "updatedAt": "2020-05-27T21:04:44Z",
+      "updatedAt": "2020-05-28T17:26:35Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "9a2c364839fa08c8eb8b3f714f5459c249f828ce",
       "headRepository": "cfrg/draft-irtf-cfrg-hpke",
       "headRefName": "caw/verisign-nits",
-      "headRefOid": "79fff5f3b9dbc37c7e4f5ee47ca5f70607e1b686",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "9d37303df9430d54867637168f0540c6c23a8eea",
+      "closedAt": "2020-05-27T21:40:35Z",
+      "mergedAt": "2020-05-27T21:40:35Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "881c5b6e49bf33e287b7f28f5da8b07180346e0f"
+      },
       "comments": [
         {
           "author": "chris-wood",
@@ -7350,7 +8155,7 @@
               "originalPosition": 197,
               "body": "Isn't HPKE supposed to be more general than this? SIKE should be included as a possible KEM, for example.",
               "createdAt": "2020-05-24T01:42:59Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7370,7 +8175,7 @@
               "originalPosition": 197,
               "body": "It is, but this sentence pertains to what\u2019s currently specified (with a code point) in the document. ",
               "createdAt": "2020-05-24T01:49:15Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7390,7 +8195,7 @@
               "originalPosition": 404,
               "body": "```Note that the internal Seal and Open calls inside corresponding to the context's AEAD algorithm.```\r\ncorresponding -> correspond ?",
               "createdAt": "2020-05-25T16:05:20Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7410,7 +8215,7 @@
               "originalPosition": 403,
               "body": "```suggestion\r\nthe internal Seal and Open calls inside correspond to the context's AEAD\r\n```",
               "createdAt": "2020-05-25T17:57:25Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7430,43 +8235,43 @@
               "originalPosition": 199,
               "body": "\"using ... based on ...\" seems redundant.  Reword to something like \"... primitives, such as ECDH, HKDF, and SHA2.\"  ",
               "createdAt": "2020-05-27T16:24:48Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             },
             {
               "originalPosition": 233,
               "body": "\"contained herein\" -> \"defined here\"",
               "createdAt": "2020-05-27T16:26:49Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             },
             {
               "originalPosition": 233,
               "body": "Also, why drop \"formally verified\"?  Since we did that.",
               "createdAt": "2020-05-27T16:27:14Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             },
             {
               "originalPosition": 264,
               "body": "I really don't care strongly about this, but it seems like in RFC 7748, `X*` is the group, and `Curve*` is the ECDH operation (largely just specifying the base point).  Since we're doing ECDH here, `Curve*` seems like the right answer.",
               "createdAt": "2020-05-27T18:33:29Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             },
             {
               "originalPosition": 446,
               "body": "This doesn't make sense.  The curve is a group. ",
               "createdAt": "2020-05-27T18:42:17Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             },
             {
               "originalPosition": 466,
               "body": "Same comment re group == curve.",
               "createdAt": "2020-05-27T18:43:00Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             },
             {
               "originalPosition": 477,
               "body": "Same comment, `X*` are the groups.",
               "createdAt": "2020-05-27T18:44:53Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7486,7 +8291,7 @@
               "originalPosition": 264,
               "body": "I think you've got it backwards, though both specify a base point. X* is a function from bytes to bytes, with group operations and serialization built in. curve* is a curve with base point.\r\n\r\nhttps://tools.ietf.org/html/rfc7748#section-4.1\r\n>   For the ~128-bit security level, the prime 2^255 - 19 is recommended\r\n>   for performance on a wide range of architectures.  Few primes of the\r\n>   form 2^c-s with s small exist between 2^250 and 2^521, and other\r\n>   choices of coefficient are not as competitive in performance.  This\r\n>   prime is congruent to 1 mod 4, and the derivation procedure in\r\n>   Appendix A results in the following Montgomery curve\r\n>   v^2 = u^3 + A*u^2 + u, called \"curve25519\":\r\n\r\nhttps://tools.ietf.org/html/rfc7748#section-5\r\n>   The \"X25519\" and \"X448\" functions perform scalar multiplication on\r\n>   the Montgomery form of the above curves.  (This is used when\r\n>   implementing Diffie-Hellman.)  The functions take a scalar and a\r\n>   u-coordinate as inputs and produce a u-coordinate as output.\r\n>   Although the functions work internally with integers, the inputs and\r\n>   outputs are 32-byte strings (for X25519) or 56-byte strings (for\r\n>   X448) and this specification defines their encoding.",
               "createdAt": "2020-05-27T19:08:18Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7506,7 +8311,7 @@
               "originalPosition": 264,
               "body": "Also https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/",
               "createdAt": "2020-05-27T19:09:45Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7526,7 +8331,7 @@
               "originalPosition": 264,
               "body": "Yeah, I think using x25519 is also more clear since there are small subgroups of curve25519.",
               "createdAt": "2020-05-27T19:10:22Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7546,7 +8351,7 @@
               "originalPosition": 233,
               "body": "The \"formally verified\" bit was redundant with the remainder of the paragraph, which states that we did the analysis.",
               "createdAt": "2020-05-27T21:03:04Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7566,7 +8371,7 @@
               "originalPosition": 446,
               "body": "This is just for consistency with the X25519/curve25519 notation. I think this is more clear, and lets us speak in terms of DH groups rather than specific curves.",
               "createdAt": "2020-05-27T21:03:59Z",
-              "updatedAt": "2020-05-27T21:04:24Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
             }
           ]
         },
@@ -7586,7 +8391,100 @@
               "originalPosition": 466,
               "body": "Same as above!",
               "createdAt": "2020-05-27T21:04:44Z",
-              "updatedAt": "2020-05-27T21:04:44Z"
+              "updatedAt": "2020-05-27T21:16:23Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE5NjEwMzQy",
+          "commit": {
+            "abbreviatedOid": "79fff5f"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-27T21:09:16Z",
+          "updatedAt": "2020-05-27T21:09:16Z",
+          "comments": [
+            {
+              "originalPosition": 264,
+              "body": "You guys are correct.  I was looking at the subheadings of Section 6 (ECDH), when I should have been looking at Section 4.  Comment resolved.",
+              "createdAt": "2020-05-27T21:09:16Z",
+              "updatedAt": "2020-05-27T21:16:23Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE5NjExNDEz",
+          "commit": {
+            "abbreviatedOid": "79fff5f"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-27T21:10:55Z",
+          "updatedAt": "2020-05-27T21:10:55Z",
+          "comments": [
+            {
+              "originalPosition": 446,
+              "body": "I don't think we need to distinguish between the curve group and the subgroup here.  It's not ambiguous.",
+              "createdAt": "2020-05-27T21:10:55Z",
+              "updatedAt": "2020-05-27T21:16:23Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE5NjE1MDEy",
+          "commit": {
+            "abbreviatedOid": "9d37303"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-27T21:16:54Z",
+          "updatedAt": "2020-05-27T21:16:55Z",
+          "comments": [
+            {
+              "originalPosition": 446,
+              "body": "Resolved with less text!",
+              "createdAt": "2020-05-27T21:16:54Z",
+              "updatedAt": "2020-05-27T21:16:55Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE5NjE1MTM4",
+          "commit": {
+            "abbreviatedOid": "79fff5f"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-05-27T21:17:06Z",
+          "updatedAt": "2020-05-27T21:17:06Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDIwMzM1MjA4",
+          "commit": {
+            "abbreviatedOid": "9d37303"
+          },
+          "author": "davidben",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-28T17:26:34Z",
+          "updatedAt": "2020-05-28T17:26:35Z",
+          "comments": [
+            {
+              "originalPosition": 264,
+              "body": "Hah. Those subheadings should probably have been X*. Ah well. :-)",
+              "createdAt": "2020-05-28T17:26:34Z",
+              "updatedAt": "2020-05-28T17:26:35Z"
             }
           ]
         }
