@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-06-10T17:58:45.794789+00:00",
+  "timestamp": "2020-06-16T22:28:20.313600+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -1432,6 +1432,22 @@
       "body": "The only way an endpoint notices that decryption fails is if AEAD decryption fails. This doesn't seem to be a problem, though we should probably note it for clarity's sake.",
       "createdAt": "2020-06-10T17:42:34Z",
       "updatedAt": "2020-06-10T17:42:34Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 111,
+      "id": "MDU6SXNzdWU2Mzk1ODk4Mzg=",
+      "title": "Unclear if last sequence number can be used to encrypt/decrypt messages",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/111",
+      "state": "OPEN",
+      "author": "blipp",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The draft currently says the following about the sequence number:\r\n\r\n* `Implementations [\u2026] MUST return an error if the sequence number overflows`\r\n* `If a Seal or Open operation would cause the seq field to overflow, then the implementation MUST return an error.`\r\n\r\nHowever, it is not clear to me how exactly the implementation should behave when the last sequence number is reached:\r\n\r\n* `Context.Seal` will first create the ciphertext, which is ok. Next, `self.IncrementSeq` will return an Error. Should `Context.Seal` then fail, too? The second point above kind of suggests it. So, if it should fail, then this also means that the last sequence number effectively cannot be used. If it should not fail, then it is unclear how the next `Context.Seal` will know that it really cannot encrypt anymore.\r\n\r\n* The situation for `Context.Open` is similar.\r\n\r\nSo, maybe we should just clarify that if `Context.IncrementSeq` fails, then `Context.Seal` and `Context.Open` also fail, *without* returning `ct` or `pt`, and note that this effectively means that the last sequence number cannot be used?\r\n\r\n```\r\ndef Context.IncrementSeq():\r\n  if self.seq >= (1 << (8*Nn)) - 1:\r\n    return NonceOverflowError\r\n  self.seq += 1\r\n\r\ndef Context.Seal(aad, pt):\r\n  ct = Seal(self.key, self.ComputeNonce(self.seq), aad, pt)\r\n  self.IncrementSeq()\r\n  return ct\r\n\r\ndef Context.Open(aad, ct):\r\n  pt = Open(self.key, self.ComputeNonce(self.seq), aad, ct)\r\n  if pt == OpenError:\r\n    return OpenError\r\n  self.IncrementSeq()\r\n  return pt\r\n```",
+      "createdAt": "2020-06-16T11:29:32Z",
+      "updatedAt": "2020-06-16T11:29:32Z",
       "closedAt": null,
       "comments": []
     }
