@@ -1519,8 +1519,9 @@ Internet-Draft                    HPKE                         June 2020
    This document benefited greatly from analysis done by Benjamin Lipp.
    The authors would also like to thank David Benjamin, Benjamin
    Beurdouche, Frank Denis, Kevin Jacobs, Michael Rosenberg, Michael
-   Scott, Raphael Robert, Riad Wahby, and other contributors in the CFRG
-   for helpful feedback that improved this document.
+   Scott, Raphael Robert, Steven Valdez, Riad Wahby, and other
+   contributors in the CFRG for helpful feedback that improved this
+   document.
 
 12.  References
 
@@ -1559,7 +1560,6 @@ Internet-Draft                    HPKE                         June 2020
    [BNT19]    Bellare, M., Ng, R., and B. Tackmann, "Nonces Are Noticed:
               AEAD Revisited", 2019,
               <http://dx.doi.org/10.1007/978-3-030-26948-7_9>.
-
 
 
 
