@@ -990,7 +990,7 @@ Internet-Draft                    HPKE                         June 2020
    identity function, since these curves already use fixed-length byte
    strings for public keys.
 
-   Some unmarshalled public keys MUST be validated before they can be
+   Some deserialized public keys MUST be validated before they can be
    used.  See Section 7.1.3 for specifics.
 
 7.1.2.  DeriveKeyPair
