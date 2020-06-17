@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-06-16T22:28:20.313600+00:00",
+  "timestamp": "2020-06-17T20:29:08.749467+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -1448,6 +1448,58 @@
       "body": "The draft currently says the following about the sequence number:\r\n\r\n* `Implementations [\u2026] MUST return an error if the sequence number overflows`\r\n* `If a Seal or Open operation would cause the seq field to overflow, then the implementation MUST return an error.`\r\n\r\nHowever, it is not clear to me how exactly the implementation should behave when the last sequence number is reached:\r\n\r\n* `Context.Seal` will first create the ciphertext, which is ok. Next, `self.IncrementSeq` will return an Error. Should `Context.Seal` then fail, too? The second point above kind of suggests it. So, if it should fail, then this also means that the last sequence number effectively cannot be used. If it should not fail, then it is unclear how the next `Context.Seal` will know that it really cannot encrypt anymore.\r\n\r\n* The situation for `Context.Open` is similar.\r\n\r\nSo, maybe we should just clarify that if `Context.IncrementSeq` fails, then `Context.Seal` and `Context.Open` also fail, *without* returning `ct` or `pt`, and note that this effectively means that the last sequence number cannot be used?\r\n\r\n```\r\ndef Context.IncrementSeq():\r\n  if self.seq >= (1 << (8*Nn)) - 1:\r\n    return NonceOverflowError\r\n  self.seq += 1\r\n\r\ndef Context.Seal(aad, pt):\r\n  ct = Seal(self.key, self.ComputeNonce(self.seq), aad, pt)\r\n  self.IncrementSeq()\r\n  return ct\r\n\r\ndef Context.Open(aad, ct):\r\n  pt = Open(self.key, self.ComputeNonce(self.seq), aad, ct)\r\n  if pt == OpenError:\r\n    return OpenError\r\n  self.IncrementSeq()\r\n  return pt\r\n```",
       "createdAt": "2020-06-16T11:29:32Z",
       "updatedAt": "2020-06-16T11:29:32Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 113,
+      "id": "MDU6SXNzdWU2NDAwMTU2MTU=",
+      "title": "Clarify KEM errors",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/113",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "bifurcation"
+      ],
+      "labels": [],
+      "body": "We raise errors when AEAD functions fail due (OpenError and NonceOverflowError), but do nothing similar for KEM failures. What happens when `DH()` fails? Should we raise an explicit error? Or should we add text which says something like, \"implementations MUST raise errors when <these fallible> functions fail\"? I'd lean towards being explicit, but that may may the pseudocode messy.\r\n\r\ncc @blipp",
+      "createdAt": "2020-06-16T22:35:49Z",
+      "updatedAt": "2020-06-16T22:35:49Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 114,
+      "id": "MDU6SXNzdWU2NDAwMTYyMjM=",
+      "title": "Document use cases for different HPKE modes",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/114",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From JP's review, it might be helpful if the different modes had some text describing scenarios or use cases where they make sense. @bifurcation, what do you think?\r\n\r\ncc @blipp ",
+      "createdAt": "2020-06-16T22:37:28Z",
+      "updatedAt": "2020-06-16T22:37:28Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 115,
+      "id": "MDU6SXNzdWU2NDAwMTY2MjY=",
+      "title": "Reference 2006/265",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/115",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "chris-wood"
+      ],
+      "labels": [],
+      "body": "[The paper](https://eprint.iacr.org/2006/265.pdf) presents conditions for secure KEM/DEM constructions. We should absolutely cite it as related work.",
+      "createdAt": "2020-06-16T22:38:31Z",
+      "updatedAt": "2020-06-16T22:38:36Z",
       "closedAt": null,
       "comments": []
     }
@@ -8503,6 +8555,82 @@
               "updatedAt": "2020-05-28T17:26:35Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 112,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDM1NTAxNzU2",
+      "title": "Address partial feedback raised during RGLC.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/112",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses #111, #110, #109, #108, #107, #106, #105, #104, #103, and #102. \r\n\r\ncc @blipp, @kwantam, @dvorak42, @rozbb",
+      "createdAt": "2020-06-16T22:33:01Z",
+      "updatedAt": "2020-06-16T22:42:14Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "10c447eb233e7ec057905af544c100288ddca7ea",
+      "headRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "headRefName": "caw/rglc-feedback",
+      "headRefOid": "696553920603a5b23d8adfe0bdeb71f847b181f8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "kwantam",
+          "authorAssociation": "NONE",
+          "body": ":+1: edits look great!",
+          "createdAt": "2020-06-16T22:42:13Z",
+          "updatedAt": "2020-06-16T22:42:13Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 116,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDM2MDc3MDgy",
+      "title": "Change default_psk to be the empty byte string, Remove unused default_pkSm",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/116",
+      "state": "MERGED",
+      "author": "blipp",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Changes the default_psk to be the empty string, i.e. zero(0), instead of zero(Nh).\r\n\r\nThis makes implementations easier, because then, in PSK and AuthPSK mode, to check that the psk provided is not equal to the default_psk, it will be enough to check that the psk is strictly longer than 0 bytes, instead of comparing Nh bytes.\r\n\r\nTODO: change VerifyPSKInputs to check the length, instead of using `!=`?",
+      "createdAt": "2020-06-17T20:25:52Z",
+      "updatedAt": "2020-06-17T20:28:34Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "10c447eb233e7ec057905af544c100288ddca7ea",
+      "headRepository": "blipp/draft-irtf-cfrg-hpke",
+      "headRefName": "blipp_default_psk",
+      "headRefOid": "8432568363f1f2ca83b8c921748758e1295d6a16",
+      "closedAt": "2020-06-17T20:28:34Z",
+      "mergedAt": "2020-06-17T20:28:34Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "0aea45455c89692fa569f8a27594d17498f4de40"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDMyNzQ5NTU4",
+          "commit": {
+            "abbreviatedOid": "8432568"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-17T20:28:30Z",
+          "updatedAt": "2020-06-17T20:28:30Z",
+          "comments": []
         }
       ]
     }
