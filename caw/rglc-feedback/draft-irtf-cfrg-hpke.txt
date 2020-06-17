@@ -596,9 +596,6 @@ Internet-Draft                    HPKE                         June 2020
    *  "pskID" - An identifier for the PSK (optional; default value
       "zero(0)") of maximum length 65535 bytes.
 
-   *  "pkSm" - The sender's encoded public key (optional; default value
-      "zero(Npk)")
-
    Senders and recipients MUST validate KEM inputs and outputs as
    described in Section 7.1.
 
@@ -606,10 +603,13 @@ Internet-Draft                    HPKE                         June 2020
    That is, if a non-default value is provided for one of them, then the
    other MUST be set to a non-default value.
 
-   The key and nonce computed by this algorithm have the property that
-   they are only known to the holder of the recipient private key, and
-   the party that ran the KEM to generate "zz" and "enc".  If the "psk"
-   and "pskID" arguments are provided, then the recipient is assured
+
+
+
+
+
+
+
 
 
 
@@ -618,6 +618,10 @@ Barnes, et al.          Expires 19 December 2020               [Page 11]
 Internet-Draft                    HPKE                         June 2020
 
 
+   The key and nonce computed by this algorithm have the property that
+   they are only known to the holder of the recipient private key, and
+   the party that ran the KEM to generate "zz" and "enc".  If the "psk"
+   and "pskID" arguments are provided, then the recipient is assured
    that the sender held the PSK.  If the "pkSm" argument is provided,
    then the recipient is assured that the sender held the corresponding
    private key (assuming that "zz" and "enc" were generated using the
@@ -662,10 +666,6 @@ Internet-Draft                    HPKE                         June 2020
 
    See Section 5.2 for a description of the Context output.
 
-   Note that the "key_schedule_context" construction in the KeySchedule
-   procedure is equivalent to serializing a structure of the following
-   form in the TLS presentation syntax:
-
 
 
 
@@ -673,6 +673,10 @@ Barnes, et al.          Expires 19 December 2020               [Page 12]
 
 Internet-Draft                    HPKE                         June 2020
 
+
+   Note that the "key_schedule_context" construction in the KeySchedule
+   procedure is equivalent to serializing a structure of the following
+   form in the TLS presentation syntax:
 
    struct {
        uint16 kem_id;
@@ -717,10 +721,6 @@ Internet-Draft                    HPKE                         June 2020
    *  The PSK ID is added to the context string used as the "info" input
       to the KDF
 
-   The PSK SHOULD be of length Nh bytes or longer, and SHOULD have Nh
-   bytes of entropy or more.  See Section 8.4 for a more detailed
-   discussion.
-
 
 
 
@@ -729,6 +729,10 @@ Barnes, et al.          Expires 19 December 2020               [Page 13]
 
 Internet-Draft                    HPKE                         June 2020
 
+
+   The PSK SHOULD be of length Nh bytes or longer, and SHOULD have Nh
+   bytes of entropy or more.  See Section 8.4 for a more detailed
+   discussion.
 
    def SetupPSKS(pkR, info, psk, pskID):
      zz, enc = Encap(pkR)
@@ -772,10 +776,6 @@ Internet-Draft                    HPKE                         June 2020
    def SetupAuthR(enc, skR, info, pkS):
      zz = AuthDecap(enc, skR, pkS)
      return KeySchedule(mode_auth, zz, info, default_psk, default_pskID)
-
-
-
-
 
 
 
