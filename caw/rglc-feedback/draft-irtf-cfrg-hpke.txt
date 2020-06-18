@@ -74,13 +74,13 @@ Table of Contents
    3.  Notation  . . . . . . . . . . . . . . . . . . . . . . . . . .   4
    4.  Cryptographic Dependencies  . . . . . . . . . . . . . . . . .   5
      4.1.  DH-Based KEM  . . . . . . . . . . . . . . . . . . . . . .   7
-   5.  Hybrid Public Key Encryption  . . . . . . . . . . . . . . . .  10
-     5.1.  Creating the Encryption Context . . . . . . . . . . . . .  11
+   5.  Hybrid Public Key Encryption  . . . . . . . . . . . . . . . .   9
+     5.1.  Creating the Encryption Context . . . . . . . . . . . . .  10
        5.1.1.  Encryption to a Public Key  . . . . . . . . . . . . .  13
        5.1.2.  Authentication using a Pre-Shared Key . . . . . . . .  13
        5.1.3.  Authentication using an Asymmetric Key  . . . . . . .  14
        5.1.4.  Authentication using both a PSK and an Asymmetric
-               Key . . . . . . . . . . . . . . . . . . . . . . . . .  15
+               Key . . . . . . . . . . . . . . . . . . . . . . . . .  14
      5.2.  Encryption and Decryption . . . . . . . . . . . . . . . .  15
      5.3.  Secret Export . . . . . . . . . . . . . . . . . . . . . .  16
    6.  Single-Shot APIs  . . . . . . . . . . . . . . . . . . . . . .  17
@@ -89,7 +89,7 @@ Table of Contents
        7.1.1.  Serialize/Deserialize . . . . . . . . . . . . . . . .  18
        7.1.2.  DeriveKeyPair . . . . . . . . . . . . . . . . . . . .  18
        7.1.3.  Validation of Inputs and Outputs  . . . . . . . . . .  19
-     7.2.  Key Derivation Functions (KDFs) . . . . . . . . . . . . .  20
+     7.2.  Key Derivation Functions (KDFs) . . . . . . . . . . . . .  19
      7.3.  Authenticated Encryption with Associated Data (AEAD)
            Functions . . . . . . . . . . . . . . . . . . . . . . . .  20
    8.  Security Considerations . . . . . . . . . . . . . . . . . . .  20
@@ -395,8 +395,8 @@ Internet-Draft                    HPKE                         June 2020
 
 
    def ExtractAndExpand(dh, kemContext):
-     prk = LabeledExtract(zero(0), "GROUP-dh", dh)
-     return LabeledExpand(prk, "GROUP-prk", kemContext, Nzz)
+     prk = LabeledExtract(zero(0), concat(I2OSP(kem_id, 2), "dh"), dh)
+     return LabeledExpand(prk, concat(I2OSP(kem_id, 2), "prk"), kemContext, Nzz)
 
    def Encap(pkR):
      skE, pkE = DeriveKeyPair(random(Nsk))
@@ -450,28 +450,6 @@ Barnes, et al.          Expires 20 December 2020                [Page 8]
 Internet-Draft                    HPKE                         June 2020
 
 
-   The string "GROUP" used in the "ExtractAndExpand" function is equal
-   to the ASCII-encoded name of the underlying DHKEM group.  The table
-   below lists the values for this parameter for all DHKEM variants
-   specified in this document.  For example, the "LabeledExtract" label
-   for DHKEM(P-256, HKDF-SHA256) uses the string "P256-dh".
-
-                 +----------------------------+----------+
-                 | DHKEM                      | GROUP    |
-                 +============================+==========+
-                 | DHKEM(P-256, HKDF-SHA256)  | "P256"   |
-                 +----------------------------+----------+
-                 | DHKEM(P-384, HKDF-SHA384)  | "P384"   |
-                 +----------------------------+----------+
-                 | DHKEM(P-521, HKDF-SHA512)  | "P521"   |
-                 +----------------------------+----------+
-                 | DHKEM(X25519, HKDF-SHA256) | "X25519" |
-                 +----------------------------+----------+
-                 | DHKEM(X448, HKDF-SHA512)   | "X448"   |
-                 +----------------------------+----------+
-
-                                  Table 1
-
    The KDF used in DHKEM can be equal to or different from the KDF used
    in the remainder of HPKE, depending on the chosen variant.
    Implementations MUST make sure to use the constants (Nh) and function
@@ -487,24 +465,6 @@ Internet-Draft                    HPKE                         June 2020
 
    Senders and recipients MUST validate KEM inputs and outputs as
    described in Section 7.1.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Barnes, et al.          Expires 20 December 2020                [Page 9]
-
-Internet-Draft                    HPKE                         June 2020
-
 
 5.  Hybrid Public Key Encryption
 
@@ -526,6 +486,26 @@ Internet-Draft                    HPKE                         June 2020
    The following one-byte values will be used to distinguish between
    modes:
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.          Expires 20 December 2020                [Page 9]
+
+Internet-Draft                    HPKE                         June 2020
+
+
                          +---------------+-------+
                          | Mode          | Value |
                          +===============+=======+
@@ -538,7 +518,7 @@ Internet-Draft                    HPKE                         June 2020
                          | mode_auth_psk | 0x03  |
                          +---------------+-------+
 
-                                  Table 2
+                                  Table 1
 
    All of these cases follow the same basic two-step pattern:
 
@@ -553,14 +533,6 @@ Internet-Draft                    HPKE                         June 2020
    described in Section 5.3.  See Section 5.2 for a description of this
    structure and its interfaces.  As is standard with AEAD interfaces,
    HPKE decryption fails when the underlying AEAD decryption fails.
-
-
-
-
-Barnes, et al.          Expires 20 December 2020               [Page 10]
-
-Internet-Draft                    HPKE                         June 2020
-
 
    The constructions described here presume that the relevant non-
    private parameters ("enc", "pskID", etc.) are transported between the
@@ -580,6 +552,15 @@ Internet-Draft                    HPKE                         June 2020
    The variants of HPKE defined in this document share a common key
    schedule that translates the protocol inputs into an encryption
    context.  The key schedule inputs are as follows:
+
+
+
+
+
+Barnes, et al.          Expires 20 December 2020               [Page 10]
+
+Internet-Draft                    HPKE                         June 2020
+
 
    *  "mode" - A one-byte value indicating the HPKE mode, defined in
       Section 5.
@@ -603,6 +584,25 @@ Internet-Draft                    HPKE                         June 2020
    That is, if a non-default value is provided for one of them, then the
    other MUST be set to a non-default value.
 
+   The key and nonce computed by this algorithm have the property that
+   they are only known to the holder of the recipient private key, and
+   the party that ran the KEM to generate "zz" and "enc".  If the "psk"
+   and "pskID" arguments are provided, then the recipient is assured
+   that the sender held the PSK.  If the "pkSm" argument is provided,
+   then the recipient is assured that the sender held the corresponding
+   private key (assuming that "zz" and "enc" were generated using the
+   AuthEncap / AuthDecap methods; see below).
+
+   The HPKE algorithm identifiers, i.e., the KEM "kem_id", KDF "kdf_id",
+   and AEAD "aead_id" 2-byte code points, are assumed implicit from the
+   implementation and not passed as parameters.
+
+
+
+
+
+
+
 
 
 
@@ -618,21 +618,7 @@ Barnes, et al.          Expires 20 December 2020               [Page 11]
 Internet-Draft                    HPKE                         June 2020
 
 
-   The key and nonce computed by this algorithm have the property that
-   they are only known to the holder of the recipient private key, and
-   the party that ran the KEM to generate "zz" and "enc".  If the "psk"
-   and "pskID" arguments are provided, then the recipient is assured
-   that the sender held the PSK.  If the "pkSm" argument is provided,
-   then the recipient is assured that the sender held the corresponding
-   private key (assuming that "zz" and "enc" were generated using the
-   AuthEncap / AuthDecap methods; see below).
-
-   The HPKE algorithm identifiers, i.e., the KEM "kem_id", KDF "kdf_id",
-   and AEAD "aead_id" 2-byte code points, are assumed implicit from the
-   implementation and not passed as parameters.
-
-   default_pkSm = zero(Npk)
-   default_psk = zero(Nh)
+   default_psk = zero(0)
    default_pskID = zero(0)
 
    def VerifyPSKInputs(mode, psk, pskID):
@@ -666,14 +652,6 @@ Internet-Draft                    HPKE                         June 2020
 
    See Section 5.2 for a description of the Context output.
 
-
-
-
-Barnes, et al.          Expires 20 December 2020               [Page 12]
-
-Internet-Draft                    HPKE                         June 2020
-
-
    Note that the "key_schedule_context" construction in the KeySchedule
    procedure is equivalent to serializing a structure of the following
    form in the TLS presentation syntax:
@@ -686,6 +664,15 @@ Internet-Draft                    HPKE                         June 2020
        opaque pskID_hash[Nh];
        opaque info_hash[Nh];
    } KeyScheduleContext;
+
+
+
+
+
+Barnes, et al.          Expires 20 December 2020               [Page 12]
+
+Internet-Draft                    HPKE                         June 2020
+
 
 5.1.1.  Encryption to a Public Key
 
@@ -721,15 +708,6 @@ Internet-Draft                    HPKE                         June 2020
    *  The PSK ID is added to the context string used as the "info" input
       to the KDF
 
-
-
-
-
-Barnes, et al.          Expires 20 December 2020               [Page 13]
-
-Internet-Draft                    HPKE                         June 2020
-
-
    The PSK SHOULD be of length Nh bytes or longer, and SHOULD have Nh
    bytes of entropy or more.  See Section 8.4 for a more detailed
    discussion.
@@ -741,6 +719,16 @@ Internet-Draft                    HPKE                         June 2020
    def SetupPSKR(enc, skR, info, psk, pskID):
      zz = Decap(enc, skR)
      return KeySchedule(mode_psk, zz, info, psk, pskID)
+
+
+
+
+
+
+Barnes, et al.          Expires 20 December 2020               [Page 13]
+
+Internet-Draft                    HPKE                         June 2020
+
 
 5.1.3.  Authentication using an Asymmetric Key
 
@@ -777,6 +765,18 @@ Internet-Draft                    HPKE                         June 2020
      zz = AuthDecap(enc, skR, pkS)
      return KeySchedule(mode_auth, zz, info, default_psk, default_pskID)
 
+5.1.4.  Authentication using both a PSK and an Asymmetric Key
+
+   This mode is a straightforward combination of the PSK and
+   authenticated modes.  The PSK is passed through to the key schedule
+   as in the former, and as in the latter, we use the authenticated KEM
+   variants.
+
+
+
+
+
+
 
 
 
@@ -785,13 +785,6 @@ Barnes, et al.          Expires 20 December 2020               [Page 14]
 
 Internet-Draft                    HPKE                         June 2020
 
-
-5.1.4.  Authentication using both a PSK and an Asymmetric Key
-
-   This mode is a straightforward combination of the PSK and
-   authenticated modes.  The PSK is passed through to the key schedule
-   as in the former, and as in the latter, we use the authenticated KEM
-   variants.
 
    def SetupAuthPSKS(pkR, info, psk, pskID, skS):
      zz, enc = AuthEncap(pkR, skS)
@@ -833,15 +826,6 @@ Internet-Draft                    HPKE                         June 2020
    left with zero), but MUST raise an error if the sequence number
    overflows.
 
-
-
-
-
-Barnes, et al.          Expires 20 December 2020               [Page 15]
-
-Internet-Draft                    HPKE                         June 2020
-
-
    Encryption is unidirectional from sender to recipient.  Each
    encryption or decryption operation increments the sequence number for
    the context in use.  The sender's context MUST NOT be used for
@@ -850,6 +834,13 @@ Internet-Draft                    HPKE                         June 2020
    for more general purposes can derive separate keying material as
    needed using use the Export interface; see Section 5.3 for more
    details.
+
+
+
+Barnes, et al.          Expires 20 December 2020               [Page 15]
+
+Internet-Draft                    HPKE                         June 2020
+
 
    It is up to the application to ensure that encryptions and
    decryptions are done in the proper sequence, so that encryption and
@@ -889,7 +880,16 @@ Internet-Draft                    HPKE                         June 2020
    "exporter_context" and desired length "L" (in bytes), and produces a
    secret derived from the internal exporter secret using the
    corresponding KDF Expand function.  The "exporter_context" parameter
-   has a maximum length of 65535 bytes.
+   has a maximum length of 65535 bytes, and "L" has a maximum length of
+   "255*Nh" bytes.
+
+   def Context.Export(exporter_context, L):
+     return LabeledExpand(self.exporter_secret, "sec", exporter_context, L)
+
+
+
+
+
 
 
 
@@ -897,9 +897,6 @@ Barnes, et al.          Expires 20 December 2020               [Page 16]
 
 Internet-Draft                    HPKE                         June 2020
 
-
-   def Context.Export(exporter_context, L):
-     return LabeledExpand(self.exporter_secret, "sec", exporter_context, L)
 
 6.  Single-Shot APIs
 
@@ -946,6 +943,9 @@ Internet-Draft                    HPKE                         June 2020
     | 0x0011 | DHKEM(P-384,  | 48  | 97   | 97  | 48  | [NISTCurves], |
     |        | HKDF-SHA384)  |     |      |     |     | [RFC5869]     |
     +--------+---------------+-----+------+-----+-----+---------------+
+    | 0x0012 | DHKEM(P-521,  | 64  | 133  | 133 | 66  | [NISTCurves], |
+    |        | HKDF-SHA512)  |     |      |     |     | [RFC5869]     |
+    +--------+---------------+-----+------+-----+-----+---------------+
 
 
 
@@ -954,9 +954,6 @@ Barnes, et al.          Expires 20 December 2020               [Page 17]
 Internet-Draft                    HPKE                         June 2020
 
 
-    | 0x0012 | DHKEM(P-521,  | 64  | 133  | 133 | 66  | [NISTCurves], |
-    |        | HKDF-SHA512)  |     |      |     |     | [RFC5869]     |
-    +--------+---------------+-----+------+-----+-----+---------------+
     | 0x0020 | DHKEM(X25519, | 32  | 32   | 32  | 32  | [RFC7748],    |
     |        | HKDF-SHA256)  |     |      |     |     | [RFC5869]     |
     +--------+---------------+-----+------+-----+-----+---------------+
@@ -964,7 +961,7 @@ Internet-Draft                    HPKE                         June 2020
     |        | HKDF-SHA512)  |     |      |     |     | [RFC5869]     |
     +--------+---------------+-----+------+-----+-----+---------------+
 
-                                  Table 3
+                                  Table 2
 
 7.1.1.  Serialize/Deserialize
 
@@ -994,22 +991,6 @@ Internet-Draft                    HPKE                         June 2020
    For P-256, P-384 and P-521, the DeriveKeyPair function of the KEM
    performs rejection sampling over field elements:
 
-
-
-
-
-
-
-
-
-
-
-
-Barnes, et al.          Expires 20 December 2020               [Page 18]
-
-Internet-Draft                    HPKE                         June 2020
-
-
    def DeriveKeyPair(ikm):
      prk = LabeledExtract(zero(0), desc, ikm)
      sk = 0
@@ -1021,6 +1002,13 @@ Internet-Draft                    HPKE                         June 2020
        sk = OS2IP(bytes)
        counter = counter + 1
      return (sk, pk(sk))
+
+
+
+Barnes, et al.          Expires 20 December 2020               [Page 18]
+
+Internet-Draft                    HPKE                         June 2020
+
 
    where "desc" is "p-256", "p-384", or "p-521", depending on the curve
    being used; "order" is the order of the curve being used (this can be
@@ -1059,13 +1047,6 @@ Internet-Draft                    HPKE                         June 2020
    secret is the all-zero value and abort if so, as described in
    [RFC7748].
 
-
-
-Barnes, et al.          Expires 20 December 2020               [Page 19]
-
-Internet-Draft                    HPKE                         June 2020
-
-
 7.2.  Key Derivation Functions (KDFs)
 
                 +--------+-------------+-----+-----------+
@@ -1077,10 +1058,18 @@ Internet-Draft                    HPKE                         June 2020
                 +--------+-------------+-----+-----------+
                 | 0x0002 | HKDF-SHA384 | 48  | [RFC5869] |
                 +--------+-------------+-----+-----------+
+
+
+
+Barnes, et al.          Expires 20 December 2020               [Page 19]
+
+Internet-Draft                    HPKE                         June 2020
+
+
                 | 0x0003 | HKDF-SHA512 | 64  | [RFC5869] |
                 +--------+-------------+-----+-----------+
 
-                                 Table 4
+                                 Table 3
 
 7.3.  Authenticated Encryption with Associated Data (AEAD) Functions
 
@@ -1096,7 +1085,7 @@ Internet-Draft                    HPKE                         June 2020
            | 0x0003 | ChaCha20Poly1305 | 32  | 12  | [RFC8439] |
            +--------+------------------+-----+-----+-----------+
 
-                                  Table 5
+                                  Table 4
 
 8.  Security Considerations
 
@@ -1113,15 +1102,6 @@ Internet-Draft                    HPKE                         June 2020
    *  Export key secrecy: Indistinguishability of each export secret
       from a uniformly random bitstring of equal length
 
-
-
-
-
-Barnes, et al.          Expires 20 December 2020               [Page 20]
-
-Internet-Draft                    HPKE                         June 2020
-
-
    *  Sender authentication: Proof of sender origin for Auth and AuthPSK
       modes
 
@@ -1134,6 +1114,13 @@ Internet-Draft                    HPKE                         June 2020
    verify that the additional KDF calls do not cause the IND-CCA2
    property to fail, and second to verify the two additional properties
    noted above.
+
+
+
+Barnes, et al.          Expires 20 December 2020               [Page 20]
+
+Internet-Draft                    HPKE                         June 2020
+
 
    This work has been done for the case where the KEM is DHKEM, the AEAD
    is any IND-CCA2 scheme, and the DH group and KDF satisfy the
@@ -1173,6 +1160,19 @@ Internet-Draft                    HPKE                         June 2020
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 Barnes, et al.          Expires 20 December 2020               [Page 21]
 
 Internet-Draft                    HPKE                         June 2020
@@ -1198,7 +1198,7 @@ Internet-Draft                    HPKE                         June 2020
    | AuthPSK, export      |      X       |      X      |      X       |
    +----------------------+--------------+-------------+--------------+
 
-                                 Table 6
+                                 Table 5
 
    If non-DH-based KEM schemes are to be used with HPKE, further
    analysis will be necessary to prove their security.  The results from
