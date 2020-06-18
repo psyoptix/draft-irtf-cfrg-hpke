@@ -177,7 +177,7 @@ Internet-Draft                    HPKE                         June 2020
 
    *  Messaging Layer Security [I-D.ietf-mls-protocol]
 
-   *  Encrypted Server Name Indication [I-D.ietf-tls-esni]
+   *  TLS Encrypted ClientHello [I-D.ietf-tls-esni]
 
    *  Protection of 5G subscriber identities [fiveG]
 
