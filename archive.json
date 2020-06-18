@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-06-18T12:42:45.742254+00:00",
+  "timestamp": "2020-06-18T20:49:48.010088+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -8585,13 +8585,13 @@
       "labels": [],
       "body": "Addresses #111, #110, #109, #108, #107, #106, #105, #104, #103, and #102. \r\n\r\ncc @blipp, @kwantam, @dvorak42, @rozbb",
       "createdAt": "2020-06-16T22:33:01Z",
-      "updatedAt": "2020-06-18T12:42:26Z",
+      "updatedAt": "2020-06-18T20:49:09Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "0aea45455c89692fa569f8a27594d17498f4de40",
       "headRepository": "cfrg/draft-irtf-cfrg-hpke",
       "headRefName": "caw/rglc-feedback",
-      "headRefOid": "bc03f5a4a2a1adb11ba0b2efe22b11b5f32597f9",
+      "headRefOid": "10e21344b8de9303f1fa256b6f6b469d5a6e6bfe",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -8657,55 +8657,55 @@
               "originalPosition": 76,
               "body": "`Seal` above says \u201cciphertext and tag `ct`\u201d, should this be used here, too? Just adding \u201cand tag\u201d might make the formulation weird, because the tag is not \u201cdecrypted\u201d.",
               "createdAt": "2020-06-17T20:48:22Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 109,
               "body": "Sometimes variables like Npk are wrapped in back ticks, sometimes not. It could be nice to make this consistent at some point (not necessarily in this PR, just noticed it in this moment).",
               "createdAt": "2020-06-17T20:51:56Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 114,
               "body": "In the general KEM definition above, it is not mentioned that Deserialize can fail. Should that be added there?",
               "createdAt": "2020-06-17T20:54:34Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 189,
               "body": "Replace \u201cGroup Name\u201d by \u201cGROUP\u201d, or \u201cGroup Name (GROUP)\u201d?",
               "createdAt": "2020-06-17T20:57:13Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 218,
               "body": "```suggestion\r\n  and the recipient (optional; default value `zero(0)`) of maximum\r\n```\r\nUh, I did not see this occurrence when I submitted #116. Would you mind adding this change with this PR, for the sake of fewer merge conflicts?",
               "createdAt": "2020-06-17T21:04:27Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 223,
               "body": "```suggestion\r\n```\r\n`pkSm` is no longer an input to KeySchedule.",
               "createdAt": "2020-06-17T21:07:11Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 255,
               "body": "Using `raise` instead of `return` when an error occurs could indeed be a good idea (as Richard mentioned it off-channel). I just realized we actually already have `raise` in `VerifyPSKInputs`!",
               "createdAt": "2020-06-17T21:15:53Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 347,
               "body": "Thanks for mentioning me so prominently :)",
               "createdAt": "2020-06-17T21:19:19Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 254,
               "body": "Suggestion, to make it clearer about which Seal and Open this is, and maybe failing with an error is more explicitly saying that no other value can be returned (like, not an error *and* the ciphertext): \u201cIf `Context.Seal` or `Context.Open` would cause the `seq` field to overflow, then the implementation MUST fail with an error.\u201d",
               "createdAt": "2020-06-17T22:22:41Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8725,25 +8725,25 @@
               "originalPosition": 134,
               "body": "How necessary is the `GROUP` prefix? This complicates things a non-trivial but acceptable amount in implementation, since I'm trying to avoid allocation entirely.",
               "createdAt": "2020-06-17T23:17:30Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 221,
               "body": "I actually don't need a length limit on HKDF `info` inputs anymore in order to avoid allocation. Your call if you want to keep it or not.",
               "createdAt": "2020-06-17T23:27:30Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 225,
               "body": "Also don't need this limit anymore.",
               "createdAt": "2020-06-17T23:28:06Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             },
             {
               "originalPosition": 227,
               "body": "Ditto",
               "createdAt": "2020-06-17T23:28:14Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8763,7 +8763,7 @@
               "originalPosition": 76,
               "body": "For consistency, yeah, it should. Good catch!",
               "createdAt": "2020-06-17T23:43:30Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8783,7 +8783,7 @@
               "originalPosition": 109,
               "body": "Yep, good catch. I'll fix these and do a quick scan for others.",
               "createdAt": "2020-06-17T23:43:46Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8803,7 +8803,7 @@
               "originalPosition": 114,
               "body": "Yep -- I'll add it.",
               "createdAt": "2020-06-17T23:43:56Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8823,7 +8823,7 @@
               "originalPosition": 221,
               "body": "I inherited this from length restrictions on the TLS Exporter API.",
               "createdAt": "2020-06-17T23:47:17Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8843,7 +8843,7 @@
               "originalPosition": 225,
               "body": "This one I pulled out of thin air. I can make it larger to match. :)",
               "createdAt": "2020-06-17T23:47:34Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8863,7 +8863,7 @@
               "originalPosition": 134,
               "body": "Calling @kwantam! My take is that this is just good hygiene. Without the prefix, it's harder to reason about separation of these different ROs. ",
               "createdAt": "2020-06-17T23:49:43Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8883,7 +8883,7 @@
               "originalPosition": 254,
               "body": "That works for me -- I'll add it. Thanks!",
               "createdAt": "2020-06-17T23:49:56Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8903,7 +8903,7 @@
               "originalPosition": 255,
               "body": "Agreed. It's also a nice way to keep the return types clean. Namely, in the Seal/Open calls, we return two possible types: errors or plaintext/ciphertext. If we use `raise`, then we only return one possible type (plaintext or ciphertext). ",
               "createdAt": "2020-06-17T23:52:19Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8923,7 +8923,7 @@
               "originalPosition": 189,
               "body": "I went with the former -- thanks!",
               "createdAt": "2020-06-17T23:52:29Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8943,7 +8943,7 @@
               "originalPosition": 134,
               "body": "As @chris-wood says, it makes it easier to reasonable about random oracle separation. It may be overkill (I think in my original comment I said something like \"this is probably paranoia, but...\").\r\n\r\nThe kind of thing one might worry about without `GROUP` is a case where it's possible to confuse serialized elements of two different groups. In this case it *could* be possible to construct two exchanges with identical `kemContext` inputs. (Not clear that's enough to construct an attack, but we can completely rule out attacks of this kind by including `GROUP`.)",
               "createdAt": "2020-06-18T00:06:39Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8963,7 +8963,7 @@
               "originalPosition": 134,
               "body": "I agree with @chris-wood and @kwantam that binding `zz` explicitly to the underlying DH is important.\r\n\r\nWould it be easier for you to implement it avoiding allocation, @rozbb, if it was in the style of the context in KeySchedule? There, we include `kem_id`, `kdf_id`, `aead_id`, all as 2-byte fixed-sized values. Instead of doing \"GROUP-dh\", we could do:\r\n\r\n```\r\n  prk = LabeledExtract(zero(0), concat(I2OSP(kem_id, 2), \"dh\"), dh)\r\n  return LabeledExpand(prk, concat(I2OSP(kem_id, 2), \"prk\"), kemContext, Nzz)\r\n```\r\n\r\nThe `kem_id` already is unique per DHKEM, and also, it would avoid needing a separate table for the values of GROUP, because the table in the \u201cAlgorithm Identifiers\u201d Section already has the `kem_id`s.",
               "createdAt": "2020-06-18T10:41:36Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -8983,7 +8983,7 @@
               "originalPosition": 134,
               "body": "Ok, actually, I suggest the following for Encap and Decap:\r\n\r\n```\r\n  kemContext = concat(I2OSP(kem_id, 2), enc, pkRm)\r\n```\r\n\r\nand this for AuthEncap and AuthDecap:\r\n\r\n```\r\n  kemContext = concat(I2OSP(kem_id, 2), enc, pkRm, pkSm)\r\n```\r\n\r\nThen it is exactly in the same style as in KeySchedule. The added label `kem_id` always has two bytes. I think the LabeledExtract call in ExtractAndExpand does not need to have `kem_id` as a label, because the intermediary value `dh` is never exposed. The important thing is that `zz` is explicitly bound to the scheme's name, and for that it is enough to have it in `kemContext`. (I think we had a similar reasoning when we decided what to include where in KeySchedule's context)",
               "createdAt": "2020-06-18T10:50:12Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -9003,7 +9003,7 @@
               "originalPosition": 134,
               "body": "On the other hand, binding to the GROUP plays a similar role as the RFCXXX label which we do include in *both* LabeledExtract *and* LabeledExpand, even if the LabeledExtract results are never exposed. And this is about, as @kwantam said in #108, that the calls are orthogonal, which makes it easier to reason with separate random oracles for separate ciphersuites (and DHKEM is kind of a sub-standard inside this RFC, so it makes sense to have RFCXXXX *and* the DHKEM group as a label).\r\n\r\nSo I have a tendency for including `kem_id` in both, as I suggested in my first reply in this thread.\r\n\r\nWhat do you think?",
               "createdAt": "2020-06-18T11:28:45Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -9023,7 +9023,7 @@
               "originalPosition": 134,
               "body": "I like it! This has the same effect and is less text. Stand by for that change.",
               "createdAt": "2020-06-18T12:26:50Z",
-              "updatedAt": "2020-06-18T12:42:14Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         },
@@ -9043,7 +9043,125 @@
               "originalPosition": 134,
               "body": "@blipp fixed -- please have a look.",
               "createdAt": "2020-06-18T12:42:26Z",
-              "updatedAt": "2020-06-18T12:42:26Z"
+              "updatedAt": "2020-06-18T20:49:09Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDMzMjg3MjEx",
+          "commit": {
+            "abbreviatedOid": "27e0cbc"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2020-06-18T13:33:35Z",
+          "updatedAt": "2020-06-18T13:35:14Z",
+          "comments": [
+            {
+              "originalPosition": 284,
+              "body": "```suggestion\r\n(In the pseudocode below, `Context.IncrementSeq` fails with an error when `seq` overflows,\r\n```",
+              "createdAt": "2020-06-18T13:33:35Z",
+              "updatedAt": "2020-06-18T20:49:09Z"
+            },
+            {
+              "originalPosition": 317,
+              "body": "```suggestion\r\nfunction. For the KDFs defined in this specification, `L` has a maximum value of\r\n`255*Nh`. Future specifications which define new KDFs MUST specify a bound for `L`.\r\n```",
+              "createdAt": "2020-06-18T13:34:33Z",
+              "updatedAt": "2020-06-18T20:49:09Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDMzMzkzMjQ1",
+          "commit": {
+            "abbreviatedOid": "6b89d8a"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-18T15:21:21Z",
+          "updatedAt": "2020-06-18T15:21:22Z",
+          "comments": [
+            {
+              "originalPosition": 134,
+              "body": "Yes, this is much cleaner! In fact, DeriveKeyPair should be using `kem_id` as well, instead of the `desc` string. I'll make the PR after this lands.",
+              "createdAt": "2020-06-18T15:21:21Z",
+              "updatedAt": "2020-06-18T20:49:09Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDMzNjEzMTU2",
+          "commit": {
+            "abbreviatedOid": "b2186d2"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Couple of editorial things, otherwise lgtm",
+          "createdAt": "2020-06-18T20:12:37Z",
+          "updatedAt": "2020-06-18T20:19:36Z",
+          "comments": [
+            {
+              "originalPosition": 208,
+              "body": "I would drop this first clause, \"As is standard with AEAD interfaces\"",
+              "createdAt": "2020-06-18T20:12:38Z",
+              "updatedAt": "2020-06-18T20:49:09Z"
+            },
+            {
+              "originalPosition": 264,
+              "body": "Disagree with collapsing all of these bullets.  If you want to group them, you could have top-level \"AEAD parameters\" and \"Export parameters\"",
+              "createdAt": "2020-06-18T20:14:23Z",
+              "updatedAt": "2020-06-18T20:49:09Z"
+            },
+            {
+              "originalPosition": 387,
+              "body": "I would rephrase as: \"For X25519 and X448, public keys and DH outputs MUST be validated as described in {{RFC7748}}.  In particular, recipients MUST check whether the DH shared secret is the all-zero value and abort if so.\"",
+              "createdAt": "2020-06-18T20:19:00Z",
+              "updatedAt": "2020-06-18T20:49:09Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDMzNjMyNTI5",
+          "commit": {
+            "abbreviatedOid": "b2186d2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-18T20:43:19Z",
+          "updatedAt": "2020-06-18T20:43:19Z",
+          "comments": [
+            {
+              "originalPosition": 208,
+              "body": "\ud83d\udc4d \r\n",
+              "createdAt": "2020-06-18T20:43:19Z",
+              "updatedAt": "2020-06-18T20:49:09Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDMzNjMzMjY0",
+          "commit": {
+            "abbreviatedOid": "b2186d2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-18T20:44:31Z",
+          "updatedAt": "2020-06-18T20:44:31Z",
+          "comments": [
+            {
+              "originalPosition": 387,
+              "body": "\ud83d\udc4d ",
+              "createdAt": "2020-06-18T20:44:31Z",
+              "updatedAt": "2020-06-18T20:49:09Z"
             }
           ]
         }
@@ -9088,6 +9206,89 @@
           "createdAt": "2020-06-17T20:28:30Z",
           "updatedAt": "2020-06-17T20:28:30Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 117,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDM2NzI4OTY5",
+      "title": "Add section on input limits for psk, pskID, info, exporter_context",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/117",
+      "state": "OPEN",
+      "author": "blipp",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This adds concrete upper inclusive bounds for psk, pskID, info, and exporter_context that depend on the hash functions maximum input sizes and the constant labels we use in HPKE.\r\n\r\nComputations are documented in https://gist.github.com/blipp/9c748499b6216e9cdca75d24c5297657.\r\n\r\nThe F* spec confirms that these bounds go along with the limits of the KDFs and underlying hash functions, see [here](https://github.com/project-everest/hacl-star/blob/e645526214a9bb4133f6f46521271e8fda5c2d99/specs/Spec.Agile.HPKE.fsti#L264) and [here](https://github.com/project-everest/hacl-star/blob/e645526214a9bb4133f6f46521271e8fda5c2d99/specs/Spec.Agile.HPKE.fsti#L300).",
+      "createdAt": "2020-06-18T19:49:18Z",
+      "updatedAt": "2020-06-18T20:21:59Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "0aea45455c89692fa569f8a27594d17498f4de40",
+      "headRepository": "blipp/draft-irtf-cfrg-hpke",
+      "headRefName": "input_limits",
+      "headRefOid": "9b9edf187e0cc4d1f00c540b8c83215813d5f519",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDMzNjA1ODcy",
+          "commit": {
+            "abbreviatedOid": "9b9edf1"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM with some edits -- thanks!",
+          "createdAt": "2020-06-18T20:01:15Z",
+          "updatedAt": "2020-06-18T20:21:59Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\nprecise limits on these lengths.\r\n```",
+              "createdAt": "2020-06-18T20:01:15Z",
+              "updatedAt": "2020-06-18T20:21:59Z"
+            },
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\nused together with them. See {{kdf-input-length}} for exact limits on this length.\r\n```",
+              "createdAt": "2020-06-18T20:01:34Z",
+              "updatedAt": "2020-06-18T20:21:59Z"
+            },
+            {
+              "originalPosition": 34,
+              "body": "```suggestion\r\nis available for the inputs `psk`, `pskID`, `info`, `exporter_context`,\r\nthe variable-length parameters provided by HPKE applications.\r\nThe following table lists the maximum allowed lengths of these fields\r\n```",
+              "createdAt": "2020-06-18T20:02:39Z",
+              "updatedAt": "2020-06-18T20:21:59Z"
+            },
+            {
+              "originalPosition": 45,
+              "body": "```suggestion\r\n`LabeledExtract` were computed with the following expression:\r\n```",
+              "createdAt": "2020-06-18T20:03:35Z",
+              "updatedAt": "2020-06-18T20:21:59Z"
+            },
+            {
+              "originalPosition": 52,
+              "body": "```suggestion\r\n~~~\r\nmax_size_hash_input - Nb - size_label_rfcXXXX - size_input_label\r\n~~~\r\n\r\nThe value for `exporter_context` which is an input to `LabeledExpand`\r\nwas computed with the following expression:\r\n```",
+              "createdAt": "2020-06-18T20:20:56Z",
+              "updatedAt": "2020-06-18T20:21:59Z"
+            },
+            {
+              "originalPosition": 55,
+              "body": "```suggestion\r\nmax_size_hash_input - Nb - Nh - size_label_rfcXXXX - size_input_label - 2 - 1\r\n```",
+              "createdAt": "2020-06-18T20:21:11Z",
+              "updatedAt": "2020-06-18T20:21:59Z"
+            },
+            {
+              "originalPosition": 61,
+              "body": "```suggestion\r\nof \"RFCXXXX \" in bytes and equals 8, and `size_input_label` is the size of\r\n```",
+              "createdAt": "2020-06-18T20:21:41Z",
+              "updatedAt": "2020-06-18T20:21:59Z"
+            }
+          ]
         }
       ]
     }
