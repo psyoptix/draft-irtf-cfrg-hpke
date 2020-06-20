@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-06-19T14:51:26.826280+00:00",
+  "timestamp": "2020-06-20T18:29:54.750065+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -9530,19 +9530,106 @@
       "labels": [],
       "body": "This is work in progress to address #98, added as a pull request already to have early feedback.",
       "createdAt": "2020-06-19T11:57:28Z",
-      "updatedAt": "2020-06-19T11:57:28Z",
+      "updatedAt": "2020-06-19T21:21:33Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
-      "baseRefOid": "cbb83fdedad444990351e9f6654f389ce83a1501",
+      "baseRefOid": "98087a20c9e1338078fc6c4970f88daf1f5b9062",
       "headRepository": "blipp/draft-irtf-cfrg-hpke",
       "headRefName": "blipp_security_properties",
-      "headRefOid": "1d70001ca7e1755e5b93ecb57e8ed93111c332bf",
+      "headRefOid": "85c6a0839b052f55f5867985c3c11af6c17f18f8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM0MTY5ODAx",
+          "commit": {
+            "abbreviatedOid": "1d70001"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Good start! Is more text coming?",
+          "createdAt": "2020-06-19T15:34:19Z",
+          "updatedAt": "2020-06-19T15:36:32Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\nassured that the sender held the corresponding PSK. See {{sec-properties}} for more details.\r\n```\r\n\r\n(We can leave discussion about confidentiality guarantees and properties to the security considerations section.)",
+              "createdAt": "2020-06-19T15:34:19Z",
+              "updatedAt": "2020-06-19T21:21:33Z"
+            },
+            {
+              "originalPosition": 36,
+              "body": "```suggestion\r\nassured that the sender held the pre-shared key (PSK). The PSK is also improving the\r\n```\r\n\r\n(If this is the first time \"PSK\" occurs)",
+              "createdAt": "2020-06-19T15:34:54Z",
+              "updatedAt": "2020-06-19T21:21:33Z"
+            },
+            {
+              "originalPosition": 52,
+              "body": "```suggestion\r\nauthenticate that the sender possessed a given PSK.\r\n```",
+              "createdAt": "2020-06-19T15:35:01Z",
+              "updatedAt": "2020-06-19T21:21:33Z"
+            },
+            {
+              "originalPosition": 56,
+              "body": "```suggestion\r\nThe PSK also improves confidentiality guarantees in certain adversary models, \r\nas described in more detail in {{sec-properties}}. We assume that both parties have\r\nbeen provisioned with both the PSK value `psk` and another byte string\r\n`pskID` that is used to identify which PSK should be used.\r\n```",
+              "createdAt": "2020-06-19T15:35:57Z",
+              "updatedAt": "2020-06-19T21:21:33Z"
+            },
+            {
+              "originalPosition": 71,
+              "body": "\ud83d\udc4d ",
+              "createdAt": "2020-06-19T15:36:13Z",
+              "updatedAt": "2020-06-19T21:21:33Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 120,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDM3MzAyNjAy",
+      "title": "Clarify that DeriveKeyPair is a KEM function.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/120",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "cc @rozbb ",
+      "createdAt": "2020-06-19T21:28:45Z",
+      "updatedAt": "2020-06-20T18:29:11Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "98087a20c9e1338078fc6c4970f88daf1f5b9062",
+      "headRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "headRefName": "caw/dkp-to-kem",
+      "headRefOid": "93415d303b34101873d7fde68f70b360b540a089",
+      "closedAt": "2020-06-20T18:29:11Z",
+      "mergedAt": "2020-06-20T18:29:10Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "3e3224b52673898c6975ac3f523bb6e51a3bc8ad"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM0NDQ1Nzky",
+          "commit": {
+            "abbreviatedOid": "93415d3"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-20T18:29:05Z",
+          "updatedAt": "2020-06-20T18:29:05Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
