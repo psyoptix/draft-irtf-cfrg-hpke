@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-06-22T21:52:27.461157+00:00",
+  "timestamp": "2020-06-25T16:33:26.637053+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -1572,10 +1572,12 @@
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "From JP's review, it might be helpful if the different modes had some text describing scenarios or use cases where they make sense. @bifurcation, what do you think?\r\n\r\ncc @blipp ",
       "createdAt": "2020-06-16T22:37:28Z",
-      "updatedAt": "2020-06-16T22:37:28Z",
+      "updatedAt": "2020-06-23T13:35:24Z",
       "closedAt": null,
       "comments": []
     },
@@ -1590,10 +1592,12 @@
       "assignees": [
         "chris-wood"
       ],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "[The paper](https://eprint.iacr.org/2006/265.pdf) presents conditions for secure KEM/DEM constructions. We should absolutely cite it as related work.",
       "createdAt": "2020-06-16T22:38:31Z",
-      "updatedAt": "2020-06-16T22:38:36Z",
+      "updatedAt": "2020-06-23T13:35:24Z",
       "closedAt": null,
       "comments": []
     }
@@ -9530,18 +9534,26 @@
       "labels": [],
       "body": "This is work in progress to address #98, added as a pull request already to have early feedback.",
       "createdAt": "2020-06-19T11:57:28Z",
-      "updatedAt": "2020-06-19T21:21:33Z",
+      "updatedAt": "2020-06-23T13:23:37Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
-      "baseRefOid": "98087a20c9e1338078fc6c4970f88daf1f5b9062",
+      "baseRefOid": "fb0d45e38435664b602c69953967c9c4485840ca",
       "headRepository": "blipp/draft-irtf-cfrg-hpke",
       "headRefName": "blipp_security_properties",
-      "headRefOid": "85c6a0839b052f55f5867985c3c11af6c17f18f8",
+      "headRefOid": "f2422cd67f21966f118828030a90a92305fc317f",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "New suggestions, please review. We need to figure out how to formulate that the proofs are not yet analyzing encrypt-to-self and not yet all the curves.\r\n\r\nOh, and I am sorry for the force-pushs; I was experimenting with rebase, apparently unsuccessful.",
+          "createdAt": "2020-06-23T13:18:53Z",
+          "updatedAt": "2020-06-23T13:23:37Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM0MTY5ODAx",
@@ -9559,31 +9571,31 @@
               "originalPosition": 38,
               "body": "```suggestion\r\nassured that the sender held the corresponding PSK. See {{sec-properties}} for more details.\r\n```\r\n\r\n(We can leave discussion about confidentiality guarantees and properties to the security considerations section.)",
               "createdAt": "2020-06-19T15:34:19Z",
-              "updatedAt": "2020-06-19T21:21:33Z"
+              "updatedAt": "2020-06-23T13:17:23Z"
             },
             {
               "originalPosition": 36,
               "body": "```suggestion\r\nassured that the sender held the pre-shared key (PSK). The PSK is also improving the\r\n```\r\n\r\n(If this is the first time \"PSK\" occurs)",
               "createdAt": "2020-06-19T15:34:54Z",
-              "updatedAt": "2020-06-19T21:21:33Z"
+              "updatedAt": "2020-06-23T13:17:23Z"
             },
             {
               "originalPosition": 52,
               "body": "```suggestion\r\nauthenticate that the sender possessed a given PSK.\r\n```",
               "createdAt": "2020-06-19T15:35:01Z",
-              "updatedAt": "2020-06-19T21:21:33Z"
+              "updatedAt": "2020-06-23T13:17:23Z"
             },
             {
               "originalPosition": 56,
               "body": "```suggestion\r\nThe PSK also improves confidentiality guarantees in certain adversary models, \r\nas described in more detail in {{sec-properties}}. We assume that both parties have\r\nbeen provisioned with both the PSK value `psk` and another byte string\r\n`pskID` that is used to identify which PSK should be used.\r\n```",
               "createdAt": "2020-06-19T15:35:57Z",
-              "updatedAt": "2020-06-19T21:21:33Z"
+              "updatedAt": "2020-06-23T13:17:23Z"
             },
             {
               "originalPosition": 71,
               "body": "\ud83d\udc4d ",
               "createdAt": "2020-06-19T15:36:13Z",
-              "updatedAt": "2020-06-19T21:21:33Z"
+              "updatedAt": "2020-06-23T13:17:23Z"
             }
           ]
         }
@@ -9697,6 +9709,364 @@
               "updatedAt": "2020-06-22T21:51:42Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 122,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDM4NTk0OTMy",
+      "title": "Use LabeledExpand inside DeriveKeyPair",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/122",
+      "state": "OPEN",
+      "author": "blipp",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "For consistency it would be nice to use LabeledExpand everywhere.\r\n\r\ncc @rozbb ",
+      "createdAt": "2020-06-23T14:05:36Z",
+      "updatedAt": "2020-06-25T16:33:19Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "fb0d45e38435664b602c69953967c9c4485840ca",
+      "headRepository": "blipp/draft-irtf-cfrg-hpke",
+      "headRefName": "blipp_derivekeypair_expand",
+      "headRefOid": "9104206afcc3691faf5ac4e9eab1978c7bf41207",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In my first commit I forgot about X25519 and X448.\r\n\r\nI changed labels inside DHKEM's ExtractAndExpand to be more consistent with what we did elsewhere so far: have the label be basically the target variable name. Like label \u201cpsk_hash\u201d if we are computing `psk_hash`.\r\n\r\nI added labels for LabeledExtract inside DeriveKeyPair because these calls shall not collide with calls inside ExtractAndExpand. I am not really happy with \u201cdkp_prk\u201d (**D**erive**K**ey**P**air prk) but wanted it to be different from \u201cprk\u201d because that is already used inside ExtractAndExpand. Ideas? **Edited to add**: maybe the colon instead of an underscore will do to more intuitively separate the namespace for the label. Do you realize, we now have namespaces for labels!! :D",
+          "createdAt": "2020-06-23T14:28:04Z",
+          "updatedAt": "2020-06-23T14:44:24Z"
+        },
+        {
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Oh also you can make the counter initial value equal to 0 if you'd like. I had no reason other than \"counter #0\" sounded weird to me",
+          "createdAt": "2020-06-25T16:32:29Z",
+          "updatedAt": "2020-06-25T16:32:29Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM1ODc0NzEz",
+          "commit": {
+            "abbreviatedOid": "5a3ce40"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2020-06-23T15:01:22Z",
+          "updatedAt": "2020-06-23T15:02:32Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\n  dkp_prk = LabeledExtract(zero(0), concat(I2OSP(kem_id, 2), \"dkp_prk\"), ikm)\r\n```",
+              "createdAt": "2020-06-23T15:01:22Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            },
+            {
+              "originalPosition": 22,
+              "body": "```suggestion\r\n    bytes = LabeledExpand(dkp_prk, \"candidate\", I2OSP(counter, 1), Nsk)\r\n```",
+              "createdAt": "2020-06-23T15:01:35Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "Can this loop more than 255 times? If so, the encoding of counter might wrap below.",
+              "createdAt": "2020-06-23T15:02:01Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            },
+            {
+              "originalPosition": 33,
+              "body": "```suggestion\r\n  dkp_prk = LabeledExtract(zero(0), concat(I2OSP(kem_id, 2), \"dkp_prk\"), ikm)\r\n  sk = LabeledExpand(dkp_prk, \"sk\", zero(0), Nsk)\r\n```",
+              "createdAt": "2020-06-23T15:02:26Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM1ODg2NzYz",
+          "commit": {
+            "abbreviatedOid": "92bf279"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-23T15:13:57Z",
+          "updatedAt": "2020-06-23T15:13:57Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Very good question! Maybe @rozbb knows? I'll try to check later, too.",
+              "createdAt": "2020-06-23T15:13:57Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM1OTQ5NjY5",
+          "commit": {
+            "abbreviatedOid": "92bf279"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-23T16:23:43Z",
+          "updatedAt": "2020-06-23T16:23:43Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "I'm pretty sure the probability of this looping more than 255 times is negligible. Nevertheless, maybe we can have a short-circuit in that case? That is, inside the loop:\r\n\r\n~~~\r\nif counter > 255:\r\n   raise DeriveKeyPairFailedException()\r\n~~~",
+              "createdAt": "2020-06-23T16:23:43Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM2MzI3OTgz",
+          "commit": {
+            "abbreviatedOid": "92bf279"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-24T05:11:03Z",
+          "updatedAt": "2020-06-24T05:15:33Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Indeed, the likelihood of this failing after 255 loops is 1/2^8160. I suppose if we're doing the range check on sk (which is within range with all-but-negligible probability), then it makes sense to do a counter check.\r\n\r\nThe `raise` should either raise a generic Exception with parens, or a specific exception (such as DeriveKeyPairFailed) without parens. I prefer `raise DeriveKeyPairError`, in keeping with other error names",
+              "createdAt": "2020-06-24T05:11:03Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            },
+            {
+              "originalPosition": 16,
+              "body": "Is there a downside of putting the kem_id in the salt parameter and omitting the concat operation? It'd be cleaner",
+              "createdAt": "2020-06-24T05:14:37Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "Ditto here for putting kem_id in the salt.",
+              "createdAt": "2020-06-24T05:14:59Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM2MzMwNDM4",
+          "commit": {
+            "abbreviatedOid": "92bf279"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-24T05:18:49Z",
+          "updatedAt": "2020-06-24T05:18:49Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Maybe for the sake of consistency you namespace these as well. `eae_prk` and `eae_zz`",
+              "createdAt": "2020-06-24T05:18:49Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM2NjA4ODMx",
+          "commit": {
+            "abbreviatedOid": "92bf279"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-24T12:44:01Z",
+          "updatedAt": "2020-06-24T12:44:02Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Yeah, I wondered that myself when implementing the change. ",
+              "createdAt": "2020-06-24T12:44:01Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM2NjA5NTk2",
+          "commit": {
+            "abbreviatedOid": "92bf279"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-24T12:45:06Z",
+          "updatedAt": "2020-06-24T12:45:06Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "I used `raise` since it matches the notation used elsewhere. I'd treat this sort of failure the same as a `Context.Seal` failure.",
+              "createdAt": "2020-06-24T12:45:06Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3NTMyNzU2",
+          "commit": {
+            "abbreviatedOid": "92bf279"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-25T14:10:10Z",
+          "updatedAt": "2020-06-25T14:10:11Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "[The `salt` parameter is supposed to be random](https://tools.ietf.org/html/rfc5869#section-2.2) and [independent of `ikm`](https://tools.ietf.org/html/rfc5869#section-3.4), so I believe we should not use it to put the constant `kem_id` there.",
+              "createdAt": "2020-06-25T14:10:10Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3NTQ4ODY4",
+          "commit": {
+            "abbreviatedOid": "eabe01a"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-25T14:26:22Z",
+          "updatedAt": "2020-06-25T14:26:23Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Added the check with the most recent commit. Are you fine with having the check directly at the beginning?\r\n\r\nDo you like adding the probability of failure? How was it calculated by the way?\r\n\r\nOh, and why does the counter start with 1? If it started with 0, we would win one trial before failing. Very improbable that this one more trial makes a difference, sure ;)",
+              "createdAt": "2020-06-25T14:26:23Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3NTQ5Nzgx",
+          "commit": {
+            "abbreviatedOid": "eabe01a"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-25T14:27:20Z",
+          "updatedAt": "2020-06-25T14:27:21Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "I changed to `eae_prk`, but left zz untouched, because zz is unique, and we also did not namespace sk (because it is unique as well).",
+              "createdAt": "2020-06-25T14:27:21Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3NTYyMjk2",
+          "commit": {
+            "abbreviatedOid": "eabe01a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-25T14:39:21Z",
+          "updatedAt": "2020-06-25T14:39:21Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Yeah, it would be \"misuse\", but I don't think it makes any difference internally. Anyway, fine to leave this as is!",
+              "createdAt": "2020-06-25T14:39:21Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3NTYzMDI2",
+          "commit": {
+            "abbreviatedOid": "eabe01a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-25T14:40:05Z",
+          "updatedAt": "2020-06-25T14:40:05Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3NTczMTQz",
+          "commit": {
+            "abbreviatedOid": "eabe01a"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-25T14:50:24Z",
+          "updatedAt": "2020-06-25T14:50:24Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "I would just say \"negligible\", since the value varies from group to group.\r\n\r\nIf you're curious how I came to this number for P-256: the probability of one iteration failing is (2^256 - order)/2^256 = 2^-32. Then 255 iterations gives you that number.",
+              "createdAt": "2020-06-25T14:50:24Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3NTgxNzgy",
+          "commit": {
+            "abbreviatedOid": "8e6ff2c"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-25T14:58:59Z",
+          "updatedAt": "2020-06-25T14:58:59Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "Oh right, thanks for this remark, I changed to \u201cnegligible\u201d.\r\n\r\nThanks for the clarification on how you computed the probability.",
+              "createdAt": "2020-06-25T14:58:59Z",
+              "updatedAt": "2020-06-25T16:33:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3NjYzMDY5",
+          "commit": {
+            "abbreviatedOid": "8e6ff2c"
+          },
+          "author": "rozbb",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good! I would only tweak the wording slightly to say \"The precise likelihood of DeriveKeyPair failing with DeriveKeyPairError depends on the group being used, but it is negligibly small in all cases.\"",
+          "createdAt": "2020-06-25T16:29:22Z",
+          "updatedAt": "2020-06-25T16:30:00Z",
+          "comments": []
         }
       ]
     }
