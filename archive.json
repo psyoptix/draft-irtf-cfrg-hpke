@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-06-25T16:33:26.637053+00:00",
+  "timestamp": "2020-06-26T16:51:17.930111+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -9534,13 +9534,13 @@
       "labels": [],
       "body": "This is work in progress to address #98, added as a pull request already to have early feedback.",
       "createdAt": "2020-06-19T11:57:28Z",
-      "updatedAt": "2020-06-23T13:23:37Z",
+      "updatedAt": "2020-06-25T22:47:50Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "fb0d45e38435664b602c69953967c9c4485840ca",
       "headRepository": "blipp/draft-irtf-cfrg-hpke",
       "headRefName": "blipp_security_properties",
-      "headRefOid": "f2422cd67f21966f118828030a90a92305fc317f",
+      "headRefOid": "4244901ca7c164126783049d412f934c8874b5a3",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -9552,6 +9552,20 @@
           "body": "New suggestions, please review. We need to figure out how to formulate that the proofs are not yet analyzing encrypt-to-self and not yet all the curves.\r\n\r\nOh, and I am sorry for the force-pushs; I was experimenting with rebase, apparently unsuccessful.",
           "createdAt": "2020-06-23T13:18:53Z",
           "updatedAt": "2020-06-23T13:23:37Z"
+        },
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@bifurcation @chris-wood I added a reference to NaCl's box. Please see if this is how you want to phrase it.\r\n\r\nIntuitively it sounds like it, but I am not sure if for 0-RTT protocols/primitives, being vulnerable to KCI is equivalent to having reputability. In any way it is interesting how Box phrases it:\r\n\r\n\u201cThe crypto_box function is not meant to provide non-repudiation. On the contrary: the crypto_box function guarantees repudiability. A receiver can freely modify a boxed message, and therefore cannot convince third parties that this particular message came from the sender. The sender and receiver are nevertheless protected against forgeries by other parties. In the terminology of https://groups.google.com/group/sci.crypt/msg/ec5c18b23b11d82c, crypto_box uses \"public-key authenticators\" rather than \"public-key signatures.\"\r\n\r\nUsers who want public verifiability (or receiver-assisted public verifiability) should instead use signatures (or signcryption). Signature support is a high priority for NaCl; a signature API will be described in subsequent NaCl documentation.\u201d",
+          "createdAt": "2020-06-25T18:52:21Z",
+          "updatedAt": "2020-06-25T18:52:21Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Intuitively it sounds like it, but I am not sure if for 0-RTT protocols/primitives, being vulnerable to KCI is equivalent to having reputability. \r\n\r\nThat's a good observation -- thanks for adding it! Given that, I'm fine with this PR as is.",
+          "createdAt": "2020-06-25T19:04:48Z",
+          "updatedAt": "2020-06-25T19:04:48Z"
         }
       ],
       "reviews": [
@@ -9571,31 +9585,146 @@
               "originalPosition": 38,
               "body": "```suggestion\r\nassured that the sender held the corresponding PSK. See {{sec-properties}} for more details.\r\n```\r\n\r\n(We can leave discussion about confidentiality guarantees and properties to the security considerations section.)",
               "createdAt": "2020-06-19T15:34:19Z",
-              "updatedAt": "2020-06-23T13:17:23Z"
+              "updatedAt": "2020-06-25T18:43:54Z"
             },
             {
               "originalPosition": 36,
               "body": "```suggestion\r\nassured that the sender held the pre-shared key (PSK). The PSK is also improving the\r\n```\r\n\r\n(If this is the first time \"PSK\" occurs)",
               "createdAt": "2020-06-19T15:34:54Z",
-              "updatedAt": "2020-06-23T13:17:23Z"
+              "updatedAt": "2020-06-25T18:43:54Z"
             },
             {
               "originalPosition": 52,
               "body": "```suggestion\r\nauthenticate that the sender possessed a given PSK.\r\n```",
               "createdAt": "2020-06-19T15:35:01Z",
-              "updatedAt": "2020-06-23T13:17:23Z"
+              "updatedAt": "2020-06-25T18:43:54Z"
             },
             {
               "originalPosition": 56,
               "body": "```suggestion\r\nThe PSK also improves confidentiality guarantees in certain adversary models, \r\nas described in more detail in {{sec-properties}}. We assume that both parties have\r\nbeen provisioned with both the PSK value `psk` and another byte string\r\n`pskID` that is used to identify which PSK should be used.\r\n```",
               "createdAt": "2020-06-19T15:35:57Z",
-              "updatedAt": "2020-06-23T13:17:23Z"
+              "updatedAt": "2020-06-25T18:43:54Z"
             },
             {
               "originalPosition": 71,
               "body": "\ud83d\udc4d ",
               "createdAt": "2020-06-19T15:36:13Z",
-              "updatedAt": "2020-06-23T13:17:23Z"
+              "updatedAt": "2020-06-25T18:43:54Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3NjcyMDE4",
+          "commit": {
+            "abbreviatedOid": "f2422cd"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "This looks great! Can we pull in some content from #123 here? Once done, I'm good with this to go.",
+          "createdAt": "2020-06-25T16:40:56Z",
+          "updatedAt": "2020-06-25T16:49:12Z",
+          "comments": [
+            {
+              "originalPosition": 72,
+              "body": "This isn't quite true (per the KCI problems noted in our offline thread) -- can we adjust this?",
+              "createdAt": "2020-06-25T16:40:56Z",
+              "updatedAt": "2020-06-25T18:43:54Z"
+            },
+            {
+              "originalPosition": 179,
+              "body": "```suggestion\r\nrecipient keys are the same.\r\n```",
+              "createdAt": "2020-06-25T16:43:24Z",
+              "updatedAt": "2020-06-25T18:43:54Z"
+            },
+            {
+              "originalPosition": 201,
+              "body": "```suggestion\r\nGiven these properties, pre-shared keys strengthen both the authentication and the \r\nsecrecy properties in certain adversary models. One particular example in which\r\n```",
+              "createdAt": "2020-06-25T16:44:09Z",
+              "updatedAt": "2020-06-25T18:43:54Z"
+            },
+            {
+              "originalPosition": 203,
+              "body": "```suggestion\r\nnon-quantum-resistant KEM used with HPKE is broken by a\r\n```",
+              "createdAt": "2020-06-25T16:44:34Z",
+              "updatedAt": "2020-06-25T18:43:54Z"
+            },
+            {
+              "originalPosition": 202,
+              "body": "```suggestion\r\nthis can be useful is a hybrid quantum setting: if a\r\n```",
+              "createdAt": "2020-06-25T16:44:41Z",
+              "updatedAt": "2020-06-25T18:43:54Z"
+            },
+            {
+              "originalPosition": 206,
+              "body": "```suggestion\r\ncompromised, as described in {{WireGuard}}.\r\n```",
+              "createdAt": "2020-06-25T16:44:52Z",
+              "updatedAt": "2020-06-25T18:43:54Z"
+            },
+            {
+              "originalPosition": 216,
+              "body": "```suggestion\r\nthe KEM and the AEAD. Analyzing the HPKE instantiation in this\r\ndocument therefore required verifying that the additional KDF calls \r\ndo not cause the IND-CCA2 property to fail, as well as verifying the \r\ntwo additional properties noted above (export key secrecy and \r\nsender authentication).\r\n```",
+              "createdAt": "2020-06-25T16:46:00Z",
+              "updatedAt": "2020-06-25T18:43:54Z"
+            },
+            {
+              "originalPosition": 222,
+              "body": "```suggestion\r\nfollowing conditions {{HPKEAnalysis}}:\r\n```",
+              "createdAt": "2020-06-25T16:47:18Z",
+              "updatedAt": "2020-06-25T18:43:54Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3Nzc4ODE3",
+          "commit": {
+            "abbreviatedOid": "4244901"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-25T19:04:07Z",
+          "updatedAt": "2020-06-25T19:04:07Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3OTA4ODMw",
+          "commit": {
+            "abbreviatedOid": "4244901"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-25T22:45:02Z",
+          "updatedAt": "2020-06-25T22:46:45Z",
+          "comments": [
+            {
+              "originalPosition": 143,
+              "body": "Since there's only one difference, we could just have this as a paragraph: \"The primary difference from the base case is that the calls to ...\"",
+              "createdAt": "2020-06-25T22:45:02Z",
+              "updatedAt": "2020-06-25T22:46:45Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3OTA5OTA5",
+          "commit": {
+            "abbreviatedOid": "4244901"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-25T22:47:49Z",
+          "updatedAt": "2020-06-25T22:47:50Z",
+          "comments": [
+            {
+              "originalPosition": 143,
+              "body": "\ud83d\udc4d ",
+              "createdAt": "2020-06-25T22:47:49Z",
+              "updatedAt": "2020-06-25T22:47:50Z"
             }
           ]
         }
@@ -9717,24 +9846,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDM4NTk0OTMy",
       "title": "Use LabeledExpand inside DeriveKeyPair",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/122",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "blipp",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "For consistency it would be nice to use LabeledExpand everywhere.\r\n\r\ncc @rozbb ",
       "createdAt": "2020-06-23T14:05:36Z",
-      "updatedAt": "2020-06-25T16:33:19Z",
+      "updatedAt": "2020-06-25T16:43:52Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "fb0d45e38435664b602c69953967c9c4485840ca",
       "headRepository": "blipp/draft-irtf-cfrg-hpke",
       "headRefName": "blipp_derivekeypair_expand",
       "headRefOid": "9104206afcc3691faf5ac4e9eab1978c7bf41207",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2020-06-25T16:43:52Z",
+      "mergedAt": "2020-06-25T16:43:52Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "783861e76ba88180b2c638083d3f459d04484a1e"
+      },
       "comments": [
         {
           "author": "blipp",
@@ -9749,6 +9880,13 @@
           "body": "Oh also you can make the counter initial value equal to 0 if you'd like. I had no reason other than \"counter #0\" sounded weird to me",
           "createdAt": "2020-06-25T16:32:29Z",
           "updatedAt": "2020-06-25T16:32:29Z"
+        },
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Excellent, thanks, I just pushed your suggestions.",
+          "createdAt": "2020-06-25T16:34:05Z",
+          "updatedAt": "2020-06-25T16:34:05Z"
         }
       ],
       "reviews": [
@@ -10067,8 +10205,162 @@
           "createdAt": "2020-06-25T16:29:22Z",
           "updatedAt": "2020-06-25T16:30:00Z",
           "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3Njc0MTg3",
+          "commit": {
+            "abbreviatedOid": "9104206"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-25T16:43:44Z",
+          "updatedAt": "2020-06-25T16:43:44Z",
+          "comments": []
         }
       ]
+    },
+    {
+      "number": 123,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDQwMTM0MzQy",
+      "title": "Note KCI problems with Auth and AuthPSK.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/123",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The NaCL/libsodium [Box API](https://libsodium.gitbook.io/doc/public-key_cryptography/authenticated_encryption)) has the same problem, so perhaps HPKE should acknowledge this and move on. Alternatively, we might consider either augmenting AuthEncap/AuthDecap to address this issue, or dropping the Auth and AuthPSK modes entirely. \r\n\r\ncc @jedisct1",
+      "createdAt": "2020-06-25T16:35:01Z",
+      "updatedAt": "2020-06-25T19:05:19Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "fb0d45e38435664b602c69953967c9c4485840ca",
+      "headRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "headRefName": "caw/kci-note",
+      "headRefOid": "4021d811cf05c8c7d4c7b6134b3602554d7608e6",
+      "closedAt": "2020-06-25T19:05:18Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In #119 I also made an attempt to mention KCI, see https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/119/files#diff-0ad9f9135e8a024768ba9765798d4738R1002. So we might merge, or take \u201cSecurity Properties\u201d as proposed in #119 and add a link to this new \u201cKey-Compromise Impersonation\u201d section (I like your suggestion to say that signatures could be used by the application to mitigate this).",
+          "createdAt": "2020-06-25T16:42:04Z",
+          "updatedAt": "2020-06-25T16:42:04Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah, I'm reviewing that now and just noticed it! Can we cite the paper I mention here for KCI, and then also mention the signature workaround?",
+          "createdAt": "2020-06-25T16:48:12Z",
+          "updatedAt": "2020-06-25T16:48:12Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was moved to #119. Closing.",
+          "createdAt": "2020-06-25T19:05:18Z",
+          "updatedAt": "2020-06-25T19:05:18Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3Njc3Nzg5",
+          "commit": {
+            "abbreviatedOid": "4021d81"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-25T16:48:07Z",
+          "updatedAt": "2020-06-25T16:48:12Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Do you want to note that predecessors such as libnacl Box also have this issue?",
+              "createdAt": "2020-06-25T16:48:08Z",
+              "updatedAt": "2020-06-25T16:48:12Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM3Njc4OTky",
+          "commit": {
+            "abbreviatedOid": "4021d81"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-25T16:49:41Z",
+          "updatedAt": "2020-06-25T16:49:42Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Yeah, let's do it. @blipp, can you do this in your PR?",
+              "createdAt": "2020-06-25T16:49:42Z",
+              "updatedAt": "2020-06-25T16:49:42Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 124,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDQwMzkxNTk2",
+      "title": "Remove unnecessary KEM binding",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/124",
+      "state": "OPEN",
+      "author": "rozbb",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The KEM binding in LabeledExpand inside ExtractAndExpand is superfluous, since the KEM is already included in the LabeledExtract call. Further, KEM ID isn't included in a LabeledExpand call anywhere else in the spec.\r\n\r\nBesides that, I noticed the new lines were rendering long so I picked a multiline formatting style that looked good to me and applied it consistently.",
+      "createdAt": "2020-06-26T05:38:34Z",
+      "updatedAt": "2020-06-26T05:38:34Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "783861e76ba88180b2c638083d3f459d04484a1e",
+      "headRepository": "rozbb/draft-irtf-cfrg-hpke",
+      "headRefName": "labeling-fixes",
+      "headRefOid": "552a32e7ab2d95b78ff82679a1481e24fb90dd2a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 125,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDQwNjg2NzQy",
+      "title": "Add Ben as an author.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/125",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "It's about time I did this!",
+      "createdAt": "2020-06-26T16:50:47Z",
+      "updatedAt": "2020-06-26T16:50:47Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "783861e76ba88180b2c638083d3f459d04484a1e",
+      "headRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "headRefName": "caw/add-ben",
+      "headRefOid": "cdbcf878972cb4b349c94d57d1056608bfc773fe",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
