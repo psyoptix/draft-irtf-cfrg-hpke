@@ -339,7 +339,7 @@ Internet-Draft                    HPKE                         June 2020
 
 
    The following two functions are defined to facilitate domain
-   separation of KDF calls as well as context binding.
+   separation of KDF calls as well as context binding:
 
    def LabeledExtract(salt, label, IKM):
      labeledIKM = concat("RFCXXXX ", label, IKM)
