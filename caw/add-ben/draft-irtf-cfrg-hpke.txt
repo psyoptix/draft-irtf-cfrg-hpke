@@ -5,9 +5,8 @@
 Network Working Group                                        R.L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Informational                              K. Bhargavan
-Expires: 28 December 2020                                          Inria
-                                                                 B. Lipp
-                                                             INRIA Paris
+Expires: 28 December 2020                                        B. Lipp
+                                                                   Inria
                                                                C.A. Wood
                                                               Cloudflare
                                                             26 June 2020
@@ -49,6 +48,7 @@ Copyright Notice
 
    Copyright (c) 2020 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
+
 
 
 
@@ -4021,7 +4021,7 @@ Authors' Addresses
 
 
    Benjamin Lipp
-   INRIA Paris
+   Inria
 
    Email: benjamin.lipp@inria.fr
 
