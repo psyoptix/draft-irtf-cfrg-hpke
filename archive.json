@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-06-26T16:51:17.930111+00:00",
+  "timestamp": "2020-06-29T17:14:08.713804+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -1194,7 +1194,7 @@
       "id": "MDU6SXNzdWU2MjE4NTEzNjU=",
       "title": "Add some color to post quantum proof discussion",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/98",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1203,8 +1203,8 @@
       ],
       "body": "From https://mailarchive.ietf.org/arch/msg/cfrg/ZcTCJkilzCDshxsIj7MwKHNlNuM/\r\n\r\nSection 8.1:  \"A full proof of post-quantum security .\".  Although we understand that a full proof of post-quantum security may not be achievable within the timeline of this draft's publication, we would nevertheless recommend some additional discussion on what might be desirable to prove.  In the draft, the PSK is employed as an authentication factor, so presumably the proof being contemplated would be that authentication in the modes involving PSKs remains secure against a quantum computer.  A stronger property would be more attractive:  that encryption in the PSK modes remains secure against a quantum computer, whether the KEM itself is post-quantum or not.  If the authors consider this property plausible, then it should be mentioned here as a goal for security analysis.  If not, then the reasons for not targeting this property should also be given.\r\n\r\n",
       "createdAt": "2020-05-20T15:21:50Z",
-      "updatedAt": "2020-05-29T17:50:19Z",
-      "closedAt": null,
+      "updatedAt": "2020-06-26T21:41:23Z",
+      "closedAt": "2020-06-26T21:41:22Z",
       "comments": [
         {
           "author": "blipp",
@@ -1212,6 +1212,13 @@
           "body": "These are some excellent points!\r\n\r\n### PSK is also strengthening confidentiality\r\nIndeed we are only talking about authentication with respect to the PSK:\r\n* [Creating the Encryption Context](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#creating-the-encryption-context)\r\n```\r\nIf the psk and pskID arguments are provided, then the recipient is\r\nassured that the sender held the PSK.\r\n```\r\n* [Authentication using a Pre-Shared Key](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#authentication-using-a-pre-shared-key-mode-psk) and [Authentication using both a PSK and an Asymmetric Key](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#authentication-using-both-a-psk-and-an-asymmetric-key-mode-auth-psk)\r\n```\r\nThis variant extends the base mechanism by allowing the recipient to\r\nauthenticate that the sender possessed a given pre-shared key (PSK).\r\n```\r\n\r\nThe analysis I did in CryptoVerif shows that confidentiality remains if the KEM keys are compromised (or if the KEM keys are not compromised but the PSK is compromised). So we should indeed add this as a desired security property, with pretty much the same reasoning as employed by WireGuard, see [Section 5.2 in the WireGuard whitepaper](https://hyp.is/eMrNnKHTEeqR-TeuWEsFDA/www.wireguard.com/papers/wireguard.pdf).\r\n\r\n### Authentication provided by PSK in quantum setting\r\nIn the same way, the analysis shows that authentication remains if KEM keys are compromised, or if the PSK is compromised but not the KEM keys.\r\n\r\nSo, in a way, this is just about discussing desired security properties in different compromise cases, where certain compromise cases are especially relevant because of quantum adversaries.\r\n\r\n### Minor nit\r\nBy the way, in [Security Properties](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#security-properties-sec-properties), we should add that the PSK mode is also providing sender authentication.\r\n```\r\nSender authentication: Proof of sender origin for Auth and AuthPSK modes\r\n```\r\nLater, in [Metadata Protection](https://github.com/cfrg/draft-irtf-cfrg-hpke/blob/master/draft-irtf-cfrg-hpke.md#metadata-protection), PSK mode is correctly listed as authenticated mode.\r\n```\r\nThe authenticated modes of HPKE (PSK, Auth, AuthPSK) require [\u2026]\r\n```\r\n\r\nI'll try to find time to draft a pull request.",
           "createdAt": "2020-05-29T17:50:19Z",
           "updatedAt": "2020-05-29T17:50:19Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #119.",
+          "createdAt": "2020-06-26T21:41:22Z",
+          "updatedAt": "2020-06-26T21:41:22Z"
         }
       ]
     },
@@ -1598,6 +1605,22 @@
       "body": "[The paper](https://eprint.iacr.org/2006/265.pdf) presents conditions for secure KEM/DEM constructions. We should absolutely cite it as related work.",
       "createdAt": "2020-06-16T22:38:31Z",
       "updatedAt": "2020-06-23T13:35:24Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 128,
+      "id": "MDU6SXNzdWU2NDc1MzI4ODY=",
+      "title": "DeriveKeyPair dependency in Encap is unnecessary",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/128",
+      "state": "OPEN",
+      "author": "davidben",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "#79 added a `DeriveKeyPair` operation, which is a reasonable thing to want for protocols that need it. In doing so, it removed `GenerateKeyPair` and replaced the ephemeral DH keys in `Encap` with `DeriveKeyPair(random())`.\r\n\r\nThis seems unnecessary. It's true that having both `DeriveKeyPair` and `GenerateKeyPair` is a larger definition of KEM in HPKE, but, realistically, everyone has a `GenerateKeyPair` in their existing KEM-like APIs, while `DeriveKeyPair` is the more niche operation. After all, we've managed to use DH thus far *somehow*. :-) From the context of HPKE's use in ECH in TLS, I'm not sure `DeriveKeyPair` would be needed at all. `DeriveKeyPair(random())` is also going to result in many more hash calls than a typical `GenerateKeyPair` implementation.",
+      "createdAt": "2020-06-29T17:06:08Z",
+      "updatedAt": "2020-06-29T17:06:08Z",
       "closedAt": null,
       "comments": []
     }
@@ -9527,24 +9550,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDM3MDYwNjUx",
       "title": "Clarify desired security properties",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/119",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "blipp",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This is work in progress to address #98, added as a pull request already to have early feedback.",
       "createdAt": "2020-06-19T11:57:28Z",
-      "updatedAt": "2020-06-25T22:47:50Z",
+      "updatedAt": "2020-06-26T21:39:46Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "fb0d45e38435664b602c69953967c9c4485840ca",
       "headRepository": "blipp/draft-irtf-cfrg-hpke",
       "headRefName": "blipp_security_properties",
       "headRefOid": "4244901ca7c164126783049d412f934c8874b5a3",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2020-06-26T21:39:46Z",
+      "mergedAt": "2020-06-26T21:39:46Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "012709f788ffbafdd99a6e777369f6101296c957"
+      },
       "comments": [
         {
           "author": "blipp",
@@ -9725,6 +9750,26 @@
               "body": "\ud83d\udc4d ",
               "createdAt": "2020-06-25T22:47:49Z",
               "updatedAt": "2020-06-25T22:47:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM4NjEwNzE2",
+          "commit": {
+            "abbreviatedOid": "4244901"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-26T21:39:31Z",
+          "updatedAt": "2020-06-26T21:39:31Z",
+          "comments": [
+            {
+              "originalPosition": 143,
+              "body": "I'll make this change after merging!",
+              "createdAt": "2020-06-26T21:39:31Z",
+              "updatedAt": "2020-06-26T21:39:31Z"
             }
           ]
         }
@@ -10322,7 +10367,7 @@
       "labels": [],
       "body": "The KEM binding in LabeledExpand inside ExtractAndExpand is superfluous, since the KEM is already included in the LabeledExtract call. Further, KEM ID isn't included in a LabeledExpand call anywhere else in the spec.\r\n\r\nBesides that, I noticed the new lines were rendering long so I picked a multiline formatting style that looked good to me and applied it consistently.",
       "createdAt": "2020-06-26T05:38:34Z",
-      "updatedAt": "2020-06-26T05:38:34Z",
+      "updatedAt": "2020-06-26T17:24:52Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "783861e76ba88180b2c638083d3f459d04484a1e",
@@ -10333,7 +10378,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This raises an important point. I touched this topic briefly in https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/112#discussion_r442157565:\r\n\r\n \u201c[\u2026] binding to the [kem_id] plays a similar role as the RFCXXXX label which we do include in *both* LabeledExtract and LabeledExpand, even if the LabeledExtract results are never exposed. [\u2026] this is about [\u2026] that the calls are orthogonal, which makes it easier to reason with separate random oracles for separate ciphersuites (and DHKEM is kind of a sub-standard inside this RFC, so it makes sense to have RFCXXXX and the DHKEM group as a label).\u201d\r\n\r\nI thought about this again for a while today. I start thinking that we should just put the entire ciphersuite identifier as a label, along with \"RFCXXXX \". For a DHKEM, the \u201centire ciphersuite\u201d is only the `kem_id`, but for the remainder of HPKE, it is `kem_id`, `kdf_id`, `aead_id`.\r\n\r\n```\r\nciphersuite (KEM) = I2OSP(kem_id, 2)\r\n\r\nciphersuite (remainder) = concat(\r\n  I2OSP(kem_id, 2),\r\n  I2OSP(kdf_id, 2),\r\n  I2OSP(aead_id, 2))\r\n\r\ndef LabeledExtract(salt, label, IKM):\r\n  labeledIKM = concat(\"RFCXXXX \", ciphersuite, label, IKM)\r\n  return Extract(salt, labeledIKM)\r\n\r\ndef LabeledExpand(PRK, label, info, L):\r\n  labeledInfo = concat(I2OSP(L, 2), \"RFCXXXX \", ciphersuite, label, info)\r\n  return Expand(PRK, labeledInfo, L)\r\n```\r\n\r\nPackaging this into the KDF removes it as clutter from ExtractAndExpand and DeriveKeyPair, and would also simplify KeySchedule. So maybe this can unite advantages for both worlds: cleaner implementation, and good for proofs.\r\n\r\nI arrived here when thinking about why it is that we do not bind the following line to the ciphersuite:\r\n\r\n```\r\nsecret = LabeledExtract(psk_hash, \"secret\", zz)\r\n```\r\n\r\nwhile the 3 LabeledExpands in KeySchedule do have the ciphersuite within `key_schedule_context`, but then again the LabeledExpand in Context.Export does not have the ciphersuite explicitly. So again, just having the ciphersuite within LabeledExtract and LabeledExpand might make this all cleaner.",
+          "createdAt": "2020-06-26T17:24:52Z",
+          "updatedAt": "2020-06-26T17:24:52Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -10341,20 +10394,178 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDQwNjg2NzQy",
       "title": "Add Ben as an author.",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/125",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "It's about time I did this!",
       "createdAt": "2020-06-26T16:50:47Z",
-      "updatedAt": "2020-06-26T16:50:47Z",
+      "updatedAt": "2020-06-26T18:23:53Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "783861e76ba88180b2c638083d3f459d04484a1e",
       "headRepository": "cfrg/draft-irtf-cfrg-hpke",
       "headRefName": "caw/add-ben",
-      "headRefOid": "cdbcf878972cb4b349c94d57d1056608bfc773fe",
+      "headRefOid": "3baea1bdd5255daa1e8915f9f955f71767c3dd5e",
+      "closedAt": "2020-06-26T18:23:53Z",
+      "mergedAt": "2020-06-26T18:23:53Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "2968b963d3bbb692da2b3be174ba3ae509360c27"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM4NDcxNjU5",
+          "commit": {
+            "abbreviatedOid": "cdbcf87"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Thank you, really happy and honored to be on this team :)",
+          "createdAt": "2020-06-26T17:27:34Z",
+          "updatedAt": "2020-06-26T17:30:43Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\n    org: Inria\r\n```\r\n\r\nLet's do `Inria`, because I only recently learned that this is the new preferred writing of the institute. And Karthik does not have `Paris`, so I'd drop that too for consistency.",
+              "createdAt": "2020-06-26T17:27:35Z",
+              "updatedAt": "2020-06-26T18:23:45Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 126,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDQwODA3Njc0",
+      "title": "Unify domain separation by including algorithm identifiers in each Extract and Expand call.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/126",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "For DHKEM, the identifier is the KEM ID. For everything else, the identifier is\r\nthe combination of one-byte mode identifier and HPKE ciphersuite tuple.\r\n\r\nThis does more binding, in contrast to what's in #124.\r\n\r\ncc @blipp",
+      "createdAt": "2020-06-26T22:13:25Z",
+      "updatedAt": "2020-06-29T15:03:33Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "0a5f53924207f33d7d10f20647dfc7b2263a7bfa",
+      "headRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "headRefName": "caw/unify-separation",
+      "headRefOid": "a74f88962ca46cb04d84e1073831644970f9f345",
+      "closedAt": "2020-06-29T15:03:33Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I submitted an alternative approach with #127. It has the advantage that `Context.Export` also gets to use the `identifier`, which would need an API change if `identifier` is explicit.",
+          "createdAt": "2020-06-29T14:59:55Z",
+          "updatedAt": "2020-06-29T15:00:55Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The proposal in #127 is cleaner -- closing!",
+          "createdAt": "2020-06-29T15:03:33Z",
+          "updatedAt": "2020-06-29T15:03:33Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM5MjMwMzgz",
+          "commit": {
+            "abbreviatedOid": "a74f889"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-29T14:58:12Z",
+          "updatedAt": "2020-06-29T14:58:13Z",
+          "comments": [
+            {
+              "originalPosition": 109,
+              "body": "```suggestion\r\n  sk = LabeledExpand(dkp_prk, concat(I2OSP(kem_id, 2), \"sk\"), zero(0), Nsk)\r\n```",
+              "createdAt": "2020-06-29T14:58:13Z",
+              "updatedAt": "2020-06-29T14:58:13Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 127,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDQxNDcxMzQy",
+      "title": "Unify separation by implicitly including algorithm identifiers",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/127",
+      "state": "OPEN",
+      "author": "blipp",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I would like to make an alternative proposition to #126, based on it.\r\n\r\nIn this proposition, `identifier` is used as implicit parameter to `LabeledExtract` and `LabeledExpand`. This can be justified because the document already assumes that `kem_id`, `kdf_id`, `aead_id` are implicitly encoded into the implementation. The advantage of having `identifier` implicit is that this removes clutter from the other function definitions; this might make implementation work easier because the calls to LabeledExtract and LabeledExpand then have fewer nested parameters.\r\n\r\nOn the question if `mode` should be in the identifier: if `mode` should be in the identifier, it is hard to let `identifier` be an implicit parameter, because the `mode` parameter is an explicit parameter (which is needed for `VerifyPSKInputs`). I thought about if we can find a reason why *not* including `mode` in the identifier is justified from a provable security point-of-view. I came to the conclusion this works out, because:\r\n\r\nThe first calls in `KeySchedule` are, from a variable dependencies point of view:\r\n```\r\n  psk_hash = LabeledExtract(zero(0), \"psk_hash\", psk)\r\n  secret = LabeledExtract(psk_hash, \"secret\", zz)\r\n```\r\n\r\nAll the following KDF calls include `mode` because it is in the `key_schedule_context`, so those are safe. Values of `secret` cannot collide between different modes, because:\r\n- `zz` is the same for the Base and PSK modes, but `psk_hash` is different for these modes (default_psk vs non-defaut)\r\n- `zz` is the same for the Auth and AuthPSK modes, but `psk_hash` is different for these modes (default_psk vs non-defaut)\r\n\r\nThis means we do not need to domain-separate by the mode in each call, because the two LabeledExtracts above already have a clear-enough dependency on the mode; which allows us to have `identifier` be implicit and have cleaner function definitions.",
+      "createdAt": "2020-06-29T14:56:46Z",
+      "updatedAt": "2020-06-29T16:52:46Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "0a5f53924207f33d7d10f20647dfc7b2263a7bfa",
+      "headRepository": "blipp/draft-irtf-cfrg-hpke",
+      "headRefName": "blipp_unify_separation",
+      "headRefOid": "723333cdf91cb556fd20cd9f62cddc34ce576b29",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM5MjM2MjI1",
+          "commit": {
+            "abbreviatedOid": "8750089"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Nice! @bifurcation, please have a look.",
+          "createdAt": "2020-06-29T15:04:16Z",
+          "updatedAt": "2020-06-29T15:05:27Z",
+          "comments": [
+            {
+              "originalPosition": 56,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2020-06-29T15:04:16Z",
+              "updatedAt": "2020-06-29T16:52:46Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 129,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDQxNTQzOTQy",
+      "title": "Add GenerateKeyPair for use in Encap and AuthEncap.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/129",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #128.",
+      "createdAt": "2020-06-29T17:12:07Z",
+      "updatedAt": "2020-06-29T17:12:07Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "0a5f53924207f33d7d10f20647dfc7b2263a7bfa",
+      "headRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "headRefName": "caw/add-gkp",
+      "headRefOid": "34fe14e754aeee5ac30183408fe756d197c6b63d",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
