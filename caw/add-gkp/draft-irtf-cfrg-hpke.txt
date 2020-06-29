@@ -338,6 +338,9 @@ Barnes, et al.          Expires 31 December 2020                [Page 6]
 Internet-Draft                    HPKE                         June 2020
 
 
+   Note that "GenerateKeyPair" can be implemented as
+   "DeriveKeyPair(random(Nsk))".
+
    The following two functions are defined for a KDF to facilitate
    domain separation of calls as well as context binding:
 
@@ -380,9 +383,6 @@ Internet-Draft                    HPKE                         June 2020
    following way, where "Group" denotes the Diffie-Hellman group and
    "KDF" the KDF.  Section 7.1.2 contains the "DeriveKeyPair" function
    specification for DHKEMs defined in this document.
-
-
-
 
 
 
