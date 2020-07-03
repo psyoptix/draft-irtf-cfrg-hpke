@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-06-29T17:14:08.713804+00:00",
+  "timestamp": "2020-07-03T23:52:12.500202+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -1613,15 +1613,15 @@
       "id": "MDU6SXNzdWU2NDc1MzI4ODY=",
       "title": "DeriveKeyPair dependency in Encap is unnecessary",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/issues/128",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "davidben",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "#79 added a `DeriveKeyPair` operation, which is a reasonable thing to want for protocols that need it. In doing so, it removed `GenerateKeyPair` and replaced the ephemeral DH keys in `Encap` with `DeriveKeyPair(random())`.\r\n\r\nThis seems unnecessary. It's true that having both `DeriveKeyPair` and `GenerateKeyPair` is a larger definition of KEM in HPKE, but, realistically, everyone has a `GenerateKeyPair` in their existing KEM-like APIs, while `DeriveKeyPair` is the more niche operation. After all, we've managed to use DH thus far *somehow*. :-) From the context of HPKE's use in ECH in TLS, I'm not sure `DeriveKeyPair` would be needed at all. `DeriveKeyPair(random())` is also going to result in many more hash calls than a typical `GenerateKeyPair` implementation.",
       "createdAt": "2020-06-29T17:06:08Z",
-      "updatedAt": "2020-06-29T17:06:08Z",
-      "closedAt": null,
+      "updatedAt": "2020-06-29T17:58:27Z",
+      "closedAt": "2020-06-29T17:58:27Z",
       "comments": []
     }
   ],
@@ -10360,21 +10360,21 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDQwMzkxNTk2",
       "title": "Remove unnecessary KEM binding",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/124",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rozbb",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The KEM binding in LabeledExpand inside ExtractAndExpand is superfluous, since the KEM is already included in the LabeledExtract call. Further, KEM ID isn't included in a LabeledExpand call anywhere else in the spec.\r\n\r\nBesides that, I noticed the new lines were rendering long so I picked a multiline formatting style that looked good to me and applied it consistently.",
       "createdAt": "2020-06-26T05:38:34Z",
-      "updatedAt": "2020-06-26T17:24:52Z",
+      "updatedAt": "2020-07-03T23:52:01Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "783861e76ba88180b2c638083d3f459d04484a1e",
       "headRepository": "rozbb/draft-irtf-cfrg-hpke",
       "headRefName": "labeling-fixes",
       "headRefOid": "552a32e7ab2d95b78ff82679a1481e24fb90dd2a",
-      "closedAt": null,
+      "closedAt": "2020-07-03T23:52:00Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -10385,6 +10385,13 @@
           "body": "This raises an important point. I touched this topic briefly in https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/112#discussion_r442157565:\r\n\r\n \u201c[\u2026] binding to the [kem_id] plays a similar role as the RFCXXXX label which we do include in *both* LabeledExtract and LabeledExpand, even if the LabeledExtract results are never exposed. [\u2026] this is about [\u2026] that the calls are orthogonal, which makes it easier to reason with separate random oracles for separate ciphersuites (and DHKEM is kind of a sub-standard inside this RFC, so it makes sense to have RFCXXXX and the DHKEM group as a label).\u201d\r\n\r\nI thought about this again for a while today. I start thinking that we should just put the entire ciphersuite identifier as a label, along with \"RFCXXXX \". For a DHKEM, the \u201centire ciphersuite\u201d is only the `kem_id`, but for the remainder of HPKE, it is `kem_id`, `kdf_id`, `aead_id`.\r\n\r\n```\r\nciphersuite (KEM) = I2OSP(kem_id, 2)\r\n\r\nciphersuite (remainder) = concat(\r\n  I2OSP(kem_id, 2),\r\n  I2OSP(kdf_id, 2),\r\n  I2OSP(aead_id, 2))\r\n\r\ndef LabeledExtract(salt, label, IKM):\r\n  labeledIKM = concat(\"RFCXXXX \", ciphersuite, label, IKM)\r\n  return Extract(salt, labeledIKM)\r\n\r\ndef LabeledExpand(PRK, label, info, L):\r\n  labeledInfo = concat(I2OSP(L, 2), \"RFCXXXX \", ciphersuite, label, info)\r\n  return Expand(PRK, labeledInfo, L)\r\n```\r\n\r\nPackaging this into the KDF removes it as clutter from ExtractAndExpand and DeriveKeyPair, and would also simplify KeySchedule. So maybe this can unite advantages for both worlds: cleaner implementation, and good for proofs.\r\n\r\nI arrived here when thinking about why it is that we do not bind the following line to the ciphersuite:\r\n\r\n```\r\nsecret = LabeledExtract(psk_hash, \"secret\", zz)\r\n```\r\n\r\nwhile the 3 LabeledExpands in KeySchedule do have the ciphersuite within `key_schedule_context`, but then again the LabeledExpand in Context.Export does not have the ciphersuite explicitly. So again, just having the ciphersuite within LabeledExtract and LabeledExpand might make this all cleaner.",
           "createdAt": "2020-06-26T17:24:52Z",
           "updatedAt": "2020-06-26T17:24:52Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@rozbb this should be addressed by #127, so I'm closing as such. Please re-open if you disagree!",
+          "createdAt": "2020-07-03T23:52:00Z",
+          "updatedAt": "2020-07-03T23:52:00Z"
         }
       ],
       "reviews": []
@@ -10505,25 +10512,42 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDQxNDcxMzQy",
       "title": "Unify separation by implicitly including algorithm identifiers",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/127",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "blipp",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "I would like to make an alternative proposition to #126, based on it.\r\n\r\nIn this proposition, `identifier` is used as implicit parameter to `LabeledExtract` and `LabeledExpand`. This can be justified because the document already assumes that `kem_id`, `kdf_id`, `aead_id` are implicitly encoded into the implementation. The advantage of having `identifier` implicit is that this removes clutter from the other function definitions; this might make implementation work easier because the calls to LabeledExtract and LabeledExpand then have fewer nested parameters.\r\n\r\nOn the question if `mode` should be in the identifier: if `mode` should be in the identifier, it is hard to let `identifier` be an implicit parameter, because the `mode` parameter is an explicit parameter (which is needed for `VerifyPSKInputs`). I thought about if we can find a reason why *not* including `mode` in the identifier is justified from a provable security point-of-view. I came to the conclusion this works out, because:\r\n\r\nThe first calls in `KeySchedule` are, from a variable dependencies point of view:\r\n```\r\n  psk_hash = LabeledExtract(zero(0), \"psk_hash\", psk)\r\n  secret = LabeledExtract(psk_hash, \"secret\", zz)\r\n```\r\n\r\nAll the following KDF calls include `mode` because it is in the `key_schedule_context`, so those are safe. Values of `secret` cannot collide between different modes, because:\r\n- `zz` is the same for the Base and PSK modes, but `psk_hash` is different for these modes (default_psk vs non-defaut)\r\n- `zz` is the same for the Auth and AuthPSK modes, but `psk_hash` is different for these modes (default_psk vs non-defaut)\r\n\r\nThis means we do not need to domain-separate by the mode in each call, because the two LabeledExtracts above already have a clear-enough dependency on the mode; which allows us to have `identifier` be implicit and have cleaner function definitions.",
       "createdAt": "2020-06-29T14:56:46Z",
-      "updatedAt": "2020-06-29T16:52:46Z",
+      "updatedAt": "2020-07-03T23:51:27Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
-      "baseRefOid": "0a5f53924207f33d7d10f20647dfc7b2263a7bfa",
+      "baseRefOid": "d7d2e75d773828134061c1a0c0704427cdad13bb",
       "headRepository": "blipp/draft-irtf-cfrg-hpke",
       "headRefName": "blipp_unify_separation",
-      "headRefOid": "723333cdf91cb556fd20cd9f62cddc34ce576b29",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "ee025a6039cbbd3aad7bcaf1a6bd41a5741bba5b",
+      "closedAt": "2020-07-03T23:51:27Z",
+      "mergedAt": "2020-07-03T23:51:26Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "ba9dd084c17f661b9c50a115c1dba2e336374d42"
+      },
+      "comments": [
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "- I resolved the possible collision between the KEM KDF calls and the remainder of HPKE by adding `KEM` and `DEM` after `RFCXXXX `. I feel like this was overdue anyway.\r\n- I changed `identifier` to `suite_id`.\r\n- Regarding @bifurcation's comment\r\n> This seems likely to be confused. Would it be clearer to add the identifier as a parameter to these methods, and explicitly pass in the right one?\r\n\r\nHm, I am torn on this one. These two possibly *different* KDFs that are both referenced with the *same names* `LabeledExtract` and `LabeledExpand` have been in the document since we added a KDF in the KEM. Adding `suite_id` just makes this possible confusion problem more apparent I guess. The test vectors will catch it at the end, but if we can make the confusion less likely, it would be nice for the developers.\r\n\r\nI am fond of the idea to leave `suite_id` implicit, because making it explicit will clutter the calls to `LabeledExtract` and `LabeledExpand`. What else could we do? Separate names like `LabeledExtractKEM` and `LabeledExtractDEM`?",
+          "createdAt": "2020-07-01T12:05:44Z",
+          "updatedAt": "2020-07-01T12:05:44Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I am fond of the idea to leave suite_id implicit, because making it explicit will clutter the calls to LabeledExtract and LabeledExpand. What else could we do? Separate names like LabeledExtractKEM and LabeledExtractDEM?\r\n\r\nI'm not sure I see much difference between a separate name for the DHKEM LabeledExtract/Expand functions, and passing the suite_id in as a parameter to the existing LabeledExtract/Expand functions. On balance, I think I also prefer what's currently written (implicit parameters). ",
+          "createdAt": "2020-07-01T16:50:53Z",
+          "updatedAt": "2020-07-02T18:17:47Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM5MjM2MjI1",
@@ -10541,7 +10565,99 @@
               "originalPosition": 56,
               "body": "```suggestion\r\n```",
               "createdAt": "2020-06-29T15:04:16Z",
-              "updatedAt": "2020-06-29T16:52:46Z"
+              "updatedAt": "2020-07-03T20:25:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM5MzYyODE0",
+          "commit": {
+            "abbreviatedOid": "723333c"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-29T17:38:59Z",
+          "updatedAt": "2020-06-29T17:43:38Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "This seems likely to be confused.  Would it be clearer to add the identifier as a parameter to these methods, and explicitly pass in the right one?",
+              "createdAt": "2020-06-29T17:38:59Z",
+              "updatedAt": "2020-07-03T20:25:58Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "Note that the suite ID is a different length than the individual KEM ID.  Do we need to worry about collision with the label?",
+              "createdAt": "2020-06-29T17:40:04Z",
+              "updatedAt": "2020-07-03T20:25:58Z"
+            },
+            {
+              "originalPosition": 80,
+              "body": "`suite_id`  for consistency?",
+              "createdAt": "2020-06-29T17:41:47Z",
+              "updatedAt": "2020-07-03T20:25:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM5Mzc3MDkw",
+          "commit": {
+            "abbreviatedOid": "723333c"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-29T17:59:13Z",
+          "updatedAt": "2020-06-29T17:59:13Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "> Note that the suite ID is a different length than the individual KEM ID. Do we need to worry about collision with the label?\r\n\r\nUh, good one. Yes, theoretically `aead_id` could collide with the labels `eae_prk` and `zz`. Not for the AEADs in the current document though: `hex(ord(\"z\"))` is `0x7a` and `hex(ord(\"e\"))` is `0x65`, and all current AEADs have 0s in the first byte.\r\n\r\nWe could have the `suite_id` for the KEMs be `concat(I2OSP(kem_id, 2), zero(4))` to avoid that forever.",
+              "createdAt": "2020-06-29T17:59:13Z",
+              "updatedAt": "2020-07-03T20:25:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQyMDA2NTkz",
+          "commit": {
+            "abbreviatedOid": "5ffb00c"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "One nit, otherwise LGTM.",
+          "createdAt": "2020-07-02T20:42:39Z",
+          "updatedAt": "2020-07-02T20:49:08Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "Nit: I would use \"HPKE\" for the non-KEM thing.",
+              "createdAt": "2020-07-02T20:42:39Z",
+              "updatedAt": "2020-07-03T20:25:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQyMzE5NTA4",
+          "commit": {
+            "abbreviatedOid": "01834ff"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-03T10:33:28Z",
+          "updatedAt": "2020-07-03T10:33:29Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "Good point \u2013 I just made this change.",
+              "createdAt": "2020-07-03T10:33:28Z",
+              "updatedAt": "2020-07-03T20:25:58Z"
             }
           ]
         }
@@ -10552,26 +10668,111 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDQxNTQzOTQy",
       "title": "Add GenerateKeyPair for use in Encap and AuthEncap.",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/129",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #128.",
       "createdAt": "2020-06-29T17:12:07Z",
-      "updatedAt": "2020-06-29T17:12:07Z",
+      "updatedAt": "2020-06-29T17:58:27Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "0a5f53924207f33d7d10f20647dfc7b2263a7bfa",
       "headRepository": "cfrg/draft-irtf-cfrg-hpke",
       "headRefName": "caw/add-gkp",
-      "headRefOid": "34fe14e754aeee5ac30183408fe756d197c6b63d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "headRefOid": "a4cded73cd66c52297b558cd2eb292351f65158f",
+      "closedAt": "2020-06-29T17:58:27Z",
+      "mergedAt": "2020-06-29T17:58:27Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "d7d2e75d773828134061c1a0c0704427cdad13bb"
+      },
+      "comments": [
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "That changes makes a lot of sense. Maybe we could add some comment somewhere in the document saying why we need `DeriveKeyPair` (it is for static keys)?",
+          "createdAt": "2020-06-29T17:20:54Z",
+          "updatedAt": "2020-06-29T17:20:54Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Maybe we could add some comment somewhere in the document saying why we need DeriveKeyPair (it is for static keys)\r\n\r\nI'm inclined to leave that off for now, if only because the output of DKP and GKP is indistinguishable, so applications may use either as they see fit.",
+          "createdAt": "2020-06-29T17:24:45Z",
+          "updatedAt": "2020-06-29T17:56:36Z"
+        },
+        {
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We should remember to add test vectors for DeriveKeyPair \u2013 as it is not used in (Auth)Encap anymore, it is not covered by the current test vectors.",
+          "createdAt": "2020-06-29T17:44:16Z",
+          "updatedAt": "2020-06-29T17:44:16Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@blipp -- I resolved this by just noting that folks can implemented GKP using DKP. ",
+          "createdAt": "2020-06-29T17:55:15Z",
+          "updatedAt": "2020-06-29T17:55:15Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM5MzUxMTQz",
+          "commit": {
+            "abbreviatedOid": "34fe14e"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-29T17:22:53Z",
+          "updatedAt": "2020-06-29T17:22:54Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\n  - GenerateKeyPair(): Generate a key pair (skX, pkX)\r\n```",
+              "createdAt": "2020-06-29T17:22:53Z",
+              "updatedAt": "2020-06-29T17:56:31Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM5MzUxNTI1",
+          "commit": {
+            "abbreviatedOid": "34fe14e"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-06-29T17:23:24Z",
+          "updatedAt": "2020-06-29T17:23:25Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\r\n- GenerateKeyPair(): Generate an ephemeral key pair `(skX, pkX)`\r\n```",
+              "createdAt": "2020-06-29T17:23:24Z",
+              "updatedAt": "2020-06-29T17:56:31Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDM5Mzc2NDA1",
+          "commit": {
+            "abbreviatedOid": "a4cded7"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-06-29T17:58:16Z",
+          "updatedAt": "2020-06-29T17:58:16Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
