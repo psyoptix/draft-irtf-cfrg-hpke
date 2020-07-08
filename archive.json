@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-07-03T23:52:12.500202+00:00",
+  "timestamp": "2020-07-08T12:47:56.545565+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -10771,6 +10771,139 @@
           "createdAt": "2020-06-29T17:58:16Z",
           "updatedAt": "2020-06-29T17:58:16Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 130,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDQ1NDgzNzgy",
+      "title": "Clarify input types for pkR, pkS, enc",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/130",
+      "state": "MERGED",
+      "author": "blipp",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "It is implicitly clear from the body of (Auth)Encap and (Auth)Decap, that `pkR` and `pkS` are supposed to be deserialized public keys and `enc` a serialized public key. This suggested change makes it explicit.",
+      "createdAt": "2020-07-07T15:20:23Z",
+      "updatedAt": "2020-07-08T12:47:05Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "ba9dd084c17f661b9c50a115c1dba2e336374d42",
+      "headRepository": "blipp/draft-irtf-cfrg-hpke",
+      "headRefName": "blipp_input_types",
+      "headRefOid": "5058b4a3d56c0d653135e92de3af7a8ac6493d52",
+      "closedAt": "2020-07-08T12:47:05Z",
+      "mergedAt": "2020-07-08T12:47:05Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "1c7c34dbbb4be02331d2cf77ecef4e06361c7ccd"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzI4MTc0",
+          "commit": {
+            "abbreviatedOid": "5058b4a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-08T12:47:00Z",
+          "updatedAt": "2020-07-08T12:47:00Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 131,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDQ1NjIxMjA2",
+      "title": "WIP: Prepare for future KEMs",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-hpke/pull/131",
+      "state": "OPEN",
+      "author": "blipp",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is work in progress and addresses #84 \u201cGuidance for future KEMs\u201d.\r\n\r\nNotes on public key length:\r\n- It seems that in SIKE, the uncompressed public key length is fixed, and [the compressed size is also fixed](https://hyp.is/-Ks_uMB1EeqREaPjYYE8nQ/eprint.iacr.org/2020/431.pdf), but smaller. I did not check all the NIST candidates so see if others do something similar. Especially I did not look if someone does variable size public keys, like, an entire range of sizes. Do you think we need to accommodate for this more explicitly? I made a small note down in `IANA Considerations/KEM Identifiers`.\r\n- In SIKE, Encaps and Decaps always take uncompressed public keys as inputs, so the caller is supposed to do the decompression, if necessary.\r\n- We do already say explicitly that for P256, P384, P521, HPKE uses **un**compressed public key encoding. I guess that is due to the current of implementations? It seems for post-quantum KEMs it is interesting to leave both possibilities open, uncompressed and compressed, because some devices might not have the computation power to do (de)compression.\r\n\r\nNotes on security requirements:\r\n- I removed the explicit requirement that `enc`, `pkR`, `pkS` must be included into the context of the KEM's key derivation. What we need is IND-CCA2 security, and if a KEM has that without these in the context, that is completely fine.\r\n\r\nDONE:\r\n- see if RSA fits into this already, as mentioned in #84.\r\n- I did not yet look at the \u201crelationship between the private key and the public key\u201d as mentioned in #84.\r\n\r\nTODO\r\n- See if any NIST candidates have different encodings for KEM ciphertexts\r\n- Do the proofs for the new security notions and update the text accordingly.\r\n- use these new notions in the main Security Considerations text?\r\n\r\nFeedback welcome especially on:\r\n- is it good to make `OPTIONAL` all-caps for GenerateKeyPair, DeriveKeyPair, AuthEncap, AuthDecap?\r\n- different public key sizes: do you think the formulations work?\r\n- It occurred to me that KEM ciphertexts might as well also have different encodings. I did not check yet if any of the NIST candidates do (this is a lot of reading work)",
+      "createdAt": "2020-07-07T19:36:28Z",
+      "updatedAt": "2020-07-08T12:46:27Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
+      "baseRefName": "master",
+      "baseRefOid": "ba9dd084c17f661b9c50a115c1dba2e336374d42",
+      "headRepository": "blipp/draft-irtf-cfrg-hpke",
+      "headRefName": "blipp_kem_guidance",
+      "headRefOid": "ca45ea831bd895254c6f9a2f42e19bf3ed7a73da",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> is it good to make OPTIONAL all-caps for GenerateKeyPair, DeriveKeyPair, AuthEncap, AuthDecap?\r\n\r\nI'm fine with all-caps, though I'm not sure GenerateKeyPair is optional. That seems to be pretty essential.\r\n\r\n> different public key sizes: do you think the formulations work?\r\n\r\nI'm not sure. I'd suggest Npk/Nenc representing maximum values, and the serialize/deserialize functions being able to parse inputs up to that size.\r\n\r\n> It occurred to me that KEM ciphertexts might as well also have different encodings. I did not check yet if any of the NIST candidates do (this is a lot of reading work)\r\n\r\nCertainly if public keys have different sizes then their encodings would too, right?",
+          "createdAt": "2020-07-08T12:46:27Z",
+          "updatedAt": "2020-07-08T12:46:27Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzE1Njk0",
+          "commit": {
+            "abbreviatedOid": "db9b2c8"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "First pass complete. Good first start!",
+          "createdAt": "2020-07-08T12:30:52Z",
+          "updatedAt": "2020-07-08T12:44:45Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "This seems like an implementation detail, so I'd remove it.",
+              "createdAt": "2020-07-08T12:30:52Z",
+              "updatedAt": "2020-07-08T12:44:45Z"
+            },
+            {
+              "originalPosition": 28,
+              "body": "Hmm, this seems mandatory since it's used in Encap, no? Is the idea that future Encaps might not have a key generation function? If not, how would keys, well, be generated?",
+              "createdAt": "2020-07-08T12:31:49Z",
+              "updatedAt": "2020-07-08T12:44:45Z"
+            },
+            {
+              "originalPosition": 181,
+              "body": "I'm not sure Insider-CCA-secure and insider-Auth-secure are common terms. We should probably define them.",
+              "createdAt": "2020-07-08T12:41:22Z",
+              "updatedAt": "2020-07-08T12:44:45Z"
+            },
+            {
+              "originalPosition": 205,
+              "body": "Maybe this should be the maximum length of an encapsulated key? The text below (suggesting that there are different lengths that need to be specified) seems odd. Really this value is in place to help with allocations and whatnot, right?",
+              "createdAt": "2020-07-08T12:42:58Z",
+              "updatedAt": "2020-07-08T12:44:45Z"
+            },
+            {
+              "originalPosition": 209,
+              "body": "Same suggestion here for maximum length.",
+              "createdAt": "2020-07-08T12:43:09Z",
+              "updatedAt": "2020-07-08T12:44:45Z"
+            },
+            {
+              "originalPosition": 124,
+              "body": "\ud83d\udc4d ",
+              "createdAt": "2020-07-08T12:43:26Z",
+              "updatedAt": "2020-07-08T12:44:45Z"
+            },
+            {
+              "originalPosition": 35,
+              "body": "Using a single constant to refer to multiple values seems error prone. Can we avoid this?",
+              "createdAt": "2020-07-08T12:44:35Z",
+              "updatedAt": "2020-07-08T12:44:45Z"
+            }
+          ]
         }
       ]
     }
