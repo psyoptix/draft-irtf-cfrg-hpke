@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-07-08T12:47:56.545565+00:00",
+  "timestamp": "2020-07-10T17:20:04.305795+00:00",
   "repo": "cfrg/draft-irtf-cfrg-hpke",
   "labels": [
     {
@@ -10828,13 +10828,13 @@
       "labels": [],
       "body": "This is work in progress and addresses #84 \u201cGuidance for future KEMs\u201d.\r\n\r\nNotes on public key length:\r\n- It seems that in SIKE, the uncompressed public key length is fixed, and [the compressed size is also fixed](https://hyp.is/-Ks_uMB1EeqREaPjYYE8nQ/eprint.iacr.org/2020/431.pdf), but smaller. I did not check all the NIST candidates so see if others do something similar. Especially I did not look if someone does variable size public keys, like, an entire range of sizes. Do you think we need to accommodate for this more explicitly? I made a small note down in `IANA Considerations/KEM Identifiers`.\r\n- In SIKE, Encaps and Decaps always take uncompressed public keys as inputs, so the caller is supposed to do the decompression, if necessary.\r\n- We do already say explicitly that for P256, P384, P521, HPKE uses **un**compressed public key encoding. I guess that is due to the current of implementations? It seems for post-quantum KEMs it is interesting to leave both possibilities open, uncompressed and compressed, because some devices might not have the computation power to do (de)compression.\r\n\r\nNotes on security requirements:\r\n- I removed the explicit requirement that `enc`, `pkR`, `pkS` must be included into the context of the KEM's key derivation. What we need is IND-CCA2 security, and if a KEM has that without these in the context, that is completely fine.\r\n\r\nDONE:\r\n- see if RSA fits into this already, as mentioned in #84.\r\n- I did not yet look at the \u201crelationship between the private key and the public key\u201d as mentioned in #84.\r\n\r\nTODO\r\n- See if any NIST candidates have different encodings for KEM ciphertexts\r\n- Do the proofs for the new security notions and update the text accordingly.\r\n- use these new notions in the main Security Considerations text?\r\n\r\nFeedback welcome especially on:\r\n- is it good to make `OPTIONAL` all-caps for GenerateKeyPair, DeriveKeyPair, AuthEncap, AuthDecap?\r\n- different public key sizes: do you think the formulations work?\r\n- It occurred to me that KEM ciphertexts might as well also have different encodings. I did not check yet if any of the NIST candidates do (this is a lot of reading work)",
       "createdAt": "2020-07-07T19:36:28Z",
-      "updatedAt": "2020-07-08T12:46:27Z",
+      "updatedAt": "2020-07-08T15:54:49Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-hpke",
       "baseRefName": "master",
       "baseRefOid": "ba9dd084c17f661b9c50a115c1dba2e336374d42",
       "headRepository": "blipp/draft-irtf-cfrg-hpke",
       "headRefName": "blipp_kem_guidance",
-      "headRefOid": "ca45ea831bd895254c6f9a2f42e19bf3ed7a73da",
+      "headRefOid": "c79a5da2b10bbd84173f61dce9a2d13649c7615a",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -10865,43 +10865,323 @@
               "originalPosition": 9,
               "body": "This seems like an implementation detail, so I'd remove it.",
               "createdAt": "2020-07-08T12:30:52Z",
-              "updatedAt": "2020-07-08T12:44:45Z"
+              "updatedAt": "2020-07-08T15:15:59Z"
             },
             {
               "originalPosition": 28,
               "body": "Hmm, this seems mandatory since it's used in Encap, no? Is the idea that future Encaps might not have a key generation function? If not, how would keys, well, be generated?",
               "createdAt": "2020-07-08T12:31:49Z",
-              "updatedAt": "2020-07-08T12:44:45Z"
+              "updatedAt": "2020-07-08T15:15:59Z"
             },
             {
               "originalPosition": 181,
               "body": "I'm not sure Insider-CCA-secure and insider-Auth-secure are common terms. We should probably define them.",
               "createdAt": "2020-07-08T12:41:22Z",
-              "updatedAt": "2020-07-08T12:44:45Z"
+              "updatedAt": "2020-07-08T15:15:59Z"
             },
             {
               "originalPosition": 205,
               "body": "Maybe this should be the maximum length of an encapsulated key? The text below (suggesting that there are different lengths that need to be specified) seems odd. Really this value is in place to help with allocations and whatnot, right?",
               "createdAt": "2020-07-08T12:42:58Z",
-              "updatedAt": "2020-07-08T12:44:45Z"
+              "updatedAt": "2020-07-08T15:15:59Z"
             },
             {
               "originalPosition": 209,
               "body": "Same suggestion here for maximum length.",
               "createdAt": "2020-07-08T12:43:09Z",
-              "updatedAt": "2020-07-08T12:44:45Z"
+              "updatedAt": "2020-07-08T15:15:59Z"
             },
             {
               "originalPosition": 124,
               "body": "\ud83d\udc4d ",
               "createdAt": "2020-07-08T12:43:26Z",
-              "updatedAt": "2020-07-08T12:44:45Z"
+              "updatedAt": "2020-07-08T15:15:59Z"
             },
             {
               "originalPosition": 35,
               "body": "Using a single constant to refer to multiple values seems error prone. Can we avoid this?",
               "createdAt": "2020-07-08T12:44:35Z",
-              "updatedAt": "2020-07-08T12:44:45Z"
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzMxNDg2",
+          "commit": {
+            "abbreviatedOid": "ca45ea8"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T12:51:14Z",
+          "updatedAt": "2020-07-08T12:51:15Z",
+          "comments": [
+            {
+              "originalPosition": 82,
+              "body": "```suggestion\r\nSince an encapsulated key is a Diffie-Hellman public key in this KEM algorithm,\r\n`SerializePublicKey` and `SerializeCiphertext` are equivalent (`Npk` = `Nenc`).\r\nThus, we implement both using a single function called `Serialize`. `Deserialize`\r\nis implemented similarly.\r\n```",
+              "createdAt": "2020-07-08T12:51:14Z",
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzMxNTMx",
+          "commit": {
+            "abbreviatedOid": "ca45ea8"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T12:51:17Z",
+          "updatedAt": "2020-07-08T12:51:18Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "I added this because #84 mentioned that for example RSA does not have this clear of a relation between public key and secret key; at least computing the public key from the secret key involves a lot of computation in RSA. We could mention it elsewhere in the document? Maybe just move the new text to the Future KEMs section?",
+              "createdAt": "2020-07-08T12:51:17Z",
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzMxOTE2",
+          "commit": {
+            "abbreviatedOid": "ca45ea8"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T12:51:46Z",
+          "updatedAt": "2020-07-08T12:51:46Z",
+          "comments": [
+            {
+              "originalPosition": 39,
+              "body": "Should we this `SerializeEncapsulatedKey`, rather than ciphertext? (That would align better with the KEM vocabulary, I think.)",
+              "createdAt": "2020-07-08T12:51:46Z",
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzM1MzE0",
+          "commit": {
+            "abbreviatedOid": "ca45ea8"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T12:55:54Z",
+          "updatedAt": "2020-07-08T12:55:55Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "For DHKEM it is mandatory because it is used in Encap/Decap as you say. Other KEMs, and RSA for example, do not use it in Encap. For these KEMs, the HPKE implementation can receive the keys from outside (the higher-level application). The keys would then also be assumed to be generated by the application. The RFCs mentioning RSA KEMs https://tools.ietf.org/html/rfc5990 and https://tools.ietf.org/html/rfc8017 for example do not mention key generation at all.",
+              "createdAt": "2020-07-08T12:55:54Z",
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzM2Nzk4",
+          "commit": {
+            "abbreviatedOid": "ca45ea8"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T12:57:38Z",
+          "updatedAt": "2020-07-08T12:57:39Z",
+          "comments": [
+            {
+              "originalPosition": 181,
+              "body": "Yes, we should define them somehow. Similar notions have been around in Signcryption literature for a while, but it is true that they are not so commen, and also the notions I am working on with the others are a bit different. Should we define them in an appendix?",
+              "createdAt": "2020-07-08T12:57:39Z",
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzQwMTAz",
+          "commit": {
+            "abbreviatedOid": "ca45ea8"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T13:01:33Z",
+          "updatedAt": "2020-07-08T13:01:33Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "Having said that, I agree that saying `OPTIONAL` if the DHKEMs defined in the document definitely require it, is odd. We could write optional in lowercase, or don't mention it in the Cryptographic Dependencies section at all and only leave the explanation in the Future KEMs section. Do you have a preference?",
+              "createdAt": "2020-07-08T13:01:33Z",
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzQxNDg3",
+          "commit": {
+            "abbreviatedOid": "ca45ea8"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T13:03:15Z",
+          "updatedAt": "2020-07-08T13:03:15Z",
+          "comments": [
+            {
+              "originalPosition": 39,
+              "body": ":+1: ",
+              "createdAt": "2020-07-08T13:03:15Z",
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzQ0Mjcy",
+          "commit": {
+            "abbreviatedOid": "ca45ea8"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T13:06:27Z",
+          "updatedAt": "2020-07-08T13:06:27Z",
+          "comments": [
+            {
+              "originalPosition": 205,
+              "body": "I like your idea of the maximum length. For the NIST P-curves, the deserialize algorithm is actually specified this way: it takes up to the maximum length, and a condition inside decides if decompression is done, depending on the actually received size.",
+              "createdAt": "2020-07-08T13:06:27Z",
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0NzQ0OTI4",
+          "commit": {
+            "abbreviatedOid": "ca45ea8"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T13:07:15Z",
+          "updatedAt": "2020-07-08T13:07:15Z",
+          "comments": [
+            {
+              "originalPosition": 82,
+              "body": ":+1: ",
+              "createdAt": "2020-07-08T13:07:15Z",
+              "updatedAt": "2020-07-08T15:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0ODcxMTky",
+          "commit": {
+            "abbreviatedOid": "c79a5da"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T15:16:55Z",
+          "updatedAt": "2020-07-08T15:16:55Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Moved to Future KEMs for now.",
+              "createdAt": "2020-07-08T15:16:55Z",
+              "updatedAt": "2020-07-08T15:16:55Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0ODc2MzI5",
+          "commit": {
+            "abbreviatedOid": "c79a5da"
+          },
+          "author": "blipp",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T15:22:30Z",
+          "updatedAt": "2020-07-08T15:22:30Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "I reverted all my changes related to making these functions optional, because:\r\n- For GenerateKeyPair, any KEM (and RSA too) can just write something like \u201cGenerateKeyPair is defined as in [reference]\u201d and fullfil the requirement easily like this.\r\n- DeriveKeyPair(ikm): here, I see two possibilities:\r\n  * any KEM (and also RSA) could just pass a complete keypair `sk, pk` to the function and let the function be the identity function\r\n  * any KEM (and also RSA) could pass whatever encoding of a complete keypair to the function and let the function be the deserialization of this encoding.\r\n\r\nDo we need to mention this in the document?",
+              "createdAt": "2020-07-08T15:22:30Z",
+              "updatedAt": "2020-07-08T15:22:30Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0OTA0NjYx",
+          "commit": {
+            "abbreviatedOid": "c79a5da"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T15:53:54Z",
+          "updatedAt": "2020-07-08T15:53:54Z",
+          "comments": [
+            {
+              "originalPosition": 181,
+              "body": "Eh... maybe? Or inline here?",
+              "createdAt": "2020-07-08T15:53:54Z",
+              "updatedAt": "2020-07-08T15:53:54Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0OTA0ODkz",
+          "commit": {
+            "abbreviatedOid": "c79a5da"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T15:54:08Z",
+          "updatedAt": "2020-07-08T15:54:08Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "\ud83d\udc4d ",
+              "createdAt": "2020-07-08T15:54:08Z",
+              "updatedAt": "2020-07-08T15:54:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ0OTA1NTM0",
+          "commit": {
+            "abbreviatedOid": "c79a5da"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-08T15:54:48Z",
+          "updatedAt": "2020-07-08T15:54:49Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "I don't think it's necessary. Thanks!",
+              "createdAt": "2020-07-08T15:54:48Z",
+              "updatedAt": "2020-07-08T15:54:49Z"
             }
           ]
         }
