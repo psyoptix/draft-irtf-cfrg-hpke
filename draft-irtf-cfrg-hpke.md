@@ -447,16 +447,16 @@ def Encap(pkR):
   skE, pkE = GenerateKeyPair()  
   enc = point_to_string(pkE)
   dh = skE . pkR
-  tohash = suite_id || \
+  ikm = suite_id || \
            encap_string || \
            point_to_string(dh)  || \
            point_to_string(pkE) || \
            point_to_string(pkR)
-  hash_s = string_to_int(Hash(tohash))
-  shared_secret = ExtractAndExpand(tohash, zero_string)
+  shared_secret = ExtractAndExpand(ikm, zero_string)
   return shared_secret, enc
 
 def Decap(enc, skR):
+  enc_p = string_to_point(enc)
   dh = skR . enc
   ikm = suite_id || \
         encap_string || \
@@ -914,14 +914,14 @@ def OpenAuthPSK(enc, skR, info, aad, ct, psk, psk_id, pkS):
 
 ## Key Encapsulation Mechanisms (KEMs) {#kem-ids}
 
-| Value  | KEM                        | Nsecret  | Nenc | Npk | Nsk | Reference                    |
-|:-------|:---------------------------|:---------|:-----|:----|:----|:-----------------------------|
-| 0x0000 | (reserved)                 | N/A      | N/A  | N/A | N/A | N/A                          |
-| 0x0010 | DHKEM(P-256, HKDF-SHA256)  | 32       | 65   | 65  | 32  | {{NISTCurves}}, {{?RFC5869}} |
-| 0x0011 | DHKEM(P-384, HKDF-SHA384)  | 48       | 97   | 97  | 48  | {{NISTCurves}}, {{?RFC5869}} |
-| 0x0012 | DHKEM(P-521, HKDF-SHA512)  | 64       | 133  | 133 | 66  | {{NISTCurves}}, {{?RFC5869}} |
-| 0x0020 | DHKEM(X25519, HKDF-SHA256) | 32       | 32   | 32  | 32  | {{?RFC7748}}, {{?RFC5869}}   |
-| 0x0021 | DHKEM(X448, HKDF-SHA512)   | 64       | 56   | 56  | 56  | {{?RFC7748}}, {{?RFC5869}}   |
+| Value  | KEM                              | Nsecret  | Nenc | Naenc | Npk | Nsk | Reference                    |
+|:-------|:---------------------------------|:---------|:-----|:------|:----|:----|:-----------------------------|
+| 0x0000 | (reserved)                       | N/A      | N/A  | N/A   | N/A | N/A | N/A                          |
+| 0x0010 | DHKEM(P-256, HKDF-SHA256)        | 32       | 65   | 97    | 65  | 32  | {{NISTCurves}}, {{?RFC5869}} |
+| 0x0011 | DHKEM(P-384, HKDF-SHA384)        | 48       | 97   | 145   | 97  | 48  | {{NISTCurves}}, {{?RFC5869}} |
+| 0x0012 | DHKEM(P-521, HKDF-SHA512)        | 64       | 133  | 199   | 133 | 66  | {{NISTCurves}}, {{?RFC5869}} |
+| 0x0020 | DHKEM(Edwards25519, HKDF-SHA256) | 32       | 32   | 64    | 32  | 32  | {{?RFC7748}}, {{?RFC5869}}   |
+| 0x0021 | DHKEM(Eddwards448, HKDF-SHA512)  | 64       | 56   | 112   | 56  | 56  | {{?RFC7748}}, {{?RFC5869}}   |
 
 ### Serialize/Deserialize
 
@@ -930,7 +930,7 @@ KEM performs the uncompressed Elliptic-Curve-Point-to-Octet-String
 conversion according to {{SECG}}. `Deserialize()` performs the
 uncompressed Octet-String-to-Elliptic-Curve-Point conversion.
 
-For X25519 and X448, the `Serialize()` and `Deserialize()` functions
+For Edwards25519 and Edwards448, the `Serialize()` and `Deserialize()` functions
 are the identity function, since these curves already use fixed-length byte
 strings for public keys.
 
