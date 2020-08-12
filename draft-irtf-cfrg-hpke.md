@@ -915,7 +915,7 @@ def OpenAuthPSK(enc, skR, info, aad, ct, psk, psk_id, pkS):
 
 ## Key Encapsulation Mechanisms (KEMs) {#kem-ids}
 
-| Value  | KEM                              | Nsecret  | Nenc | Naenc | Npk | Nsk | Reference                    |
+| kem_id | KEM                              | Nsecret  | Nenc | Naenc | Npk | Nsk | Reference                    |
 |:-------|:---------------------------------|:---------|:-----|:------|:----|:----|:-----------------------------|
 | 0x0000 | (reserved)                       | N/A      | N/A  | N/A   | N/A | N/A | N/A                          |
 | 0x0010 | DHKEM(P-256, HKDF-SHA256)        | 32       | 65   | 97    | 65  | 32  | {{NISTCurves}}, {{?RFC5869}} |
@@ -933,36 +933,36 @@ The same document defines the group `G` of curve points, the generator `B` and a
 constants and arithmetic operators making up the interface used by DHKEM. 
 
 Key generation is described in Section B.4 of {{NISTCurves}}. Deserialization and
-Serialization of scalars are described in Sections C.2.1 and C.2.2 of {{NISTCurves}}.
-Deserialization/Serialization of points are simply the identity function as for these
-curves points are already represented as strings. Finally, `DeriveKeyPair` is described
-in section {{derive-key-pair}}.
+serialization of scalars are described in Sections C.2.1 and C.2.2 of {{NISTCurves}}.
+Deserialization/serialization of a point is simply the identity function as for points
+are already represented as strings. Finally, `DeriveKeyPair` is described in section 
+{{derive-key-pair}}.
+
+Some deserialized public keys MUST be validated before they can be used. See 
+{{validation}} for specifics.
+
 
 ## Cycle Groups from Edwards Curves
 
 The interface to a cyclic group used by DHKEM can also be instatiated using curves 
 Edwards25519 and Eddwards448 as in {{?RFC8032}}.
 
-For Edwards25519 the field of scalars `F` and the group of curve points are defined using
-the constants in Table 1 of {{?RFC8032}}. For example `F` are the integers modulo prime
-`p = 2^255-19`. The addition and multiplication of two scalars is defined in 
-Section 5.1.5 while the addition two points can be found in Section 5.1.4.
+For Edwards25519 the field of scalars `F` and the group of curve points (and the
+generator `B`) are defined using the constants in Table 1 of {{?RFC8032}}. For example 
+`F` are the integers modulo prime `p = 2^255-19`. The addition and multiplication of two
+scalars is defined in Section 5.1.5 of {{?RFC8032}} while the addition two points can be
+found in Section 5.1.4. That section also includes an optimized algorithm for the special
+case of point doubling.
 
-Key generation is described in Section 5.1.5
-of {{?RFC8032}} 
+Key generation is described in Section 5.1.5 of {{?RFC8032}}. In particular, a secret
+key is sampled as a 32-octet uniform random string. The section describes how to map
+such a string to its public key.
 
-### Serialize/Deserialize
+Algorithms to encode points and scalars as strings are given in Section 5.1.2 of 
+{{?RFC8032}} and the matching decoding algorithms are given in Section 5.1.3 of 
+{{?RFC8032}}.
 
-For P-256, P-384 and P-521, the `Serialize()` function of the
-KEM performs the uncompressed Elliptic-Curve-Point-to-Octet-String
-conversion according to {{SECG}}. `Deserialize()` performs the
-uncompressed Octet-String-to-Elliptic-Curve-Point conversion.
-
-For Edwards25519 and Edwards448, the `Serialize()` and `Deserialize()` functions
-are the identity function, since these curves already use fixed-length byte
-strings for public keys.
-
-Some deserialized public keys MUST be validated before they can be used. See
+Some deserialized public keys MUST be validated before they can be used. See 
 {{validation}} for specifics.
 
 ### DeriveKeyPair {#derive-key-pair}
@@ -999,7 +999,8 @@ and P-384, and 0x01 for P-521. The precise likelihood of `DeriveKeyPair()`
 failing with DeriveKeyPairError depends on the group being used, but it
 is negligibly small in all cases.
 
-For X25519 and X448, the `DeriveKeyPair()` function applies a KDF to the input:
+For Edwards25519 and Edwards448, the `DeriveKeyPair()` function applies a KDF to the
+input:
 
 ~~~
 def DeriveKeyPair(ikm):
@@ -1024,9 +1025,9 @@ point at infinity. Additionally, senders and recipients MUST ensure the
 Diffie-Hellman shared secret is not the point at infinity.
 
 For Edwards25519 and Edwards448, public keys need not be validated as the 
-arithmetic formulas are complete obviating the need for validation
-(c.f. {{?RFC8032}}. HOwever, recipients MUST check whether the Diffie-Hellman shared
-secret is the all-zero value and abort if so.
+arithmetic formulas are complete obviating the need for validation (c.f. {{?RFC8032}}.
+However, recipients MUST check whether the Diffie-Hellman shared secret is the all-zero
+value and abort if so.
 
 ## Key Derivation Functions (KDFs) {#kdf-ids}
 
@@ -1337,8 +1338,8 @@ the proper mode, and calls the Seal method on the resulting context with an
 empty plaintext value and the content to be signed as AAD.  This produces an
 encoded key `enc` and a ciphertext value that contains only the AAD tag.
 
-For example, using DHKEM(X25519, HKDF-SHA256) and AES-128-GCM, this would produce
-a 48-byte signature comprising a 32-byte ephemeral X25519 key and a 16-byte GCM tag.
+For example, using DHKEM(Edwards25519, HKDF-SHA256) and AES-128-GCM, this would produce
+a 80-byte signature comprising a 64-byte AuthEncap ciphertext and a 16-byte GCM tag.
 
 To verify such a signature, the recipient performs the corresponding HPKE setup
 and calls `Open()` with the provided ciphertext.  If the AEAD authentication passes,
