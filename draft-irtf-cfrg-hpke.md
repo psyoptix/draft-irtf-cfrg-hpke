@@ -938,8 +938,18 @@ Deserialization/Serialization of points are simply the identity function as for 
 curves points are already represented as strings. Finally, `DeriveKeyPair` is described
 in section {{derive-key-pair}}.
 
-
 ## Cycle Groups from Edwards Curves
+
+The interface to a cyclic group used by DHKEM can also be instatiated using curves 
+Edwards25519 and Eddwards448 as in {{?RFC8032}}.
+
+For Edwards25519 the field of scalars `F` and the group of curve points are defined using
+the constants in Table 1 of {{?RFC8032}}. For example `F` are the integers modulo prime
+`p = 2^255-19`. The addition and multiplication of two scalars is defined in 
+Section 5.1.5 while the addition two points can be found in Section 5.1.4.
+
+Key generation is described in Section 5.1.5
+of {{?RFC8032}} 
 
 ### Serialize/Deserialize
 
@@ -1013,9 +1023,10 @@ correct range, that the point is on the curve, and that the point is not the
 point at infinity. Additionally, senders and recipients MUST ensure the
 Diffie-Hellman shared secret is not the point at infinity.
 
-For X25519 and X448, public keys and Diffie-Hellman outputs MUST be validated
-as described in {{RFC7748}}. In particular, recipients MUST check whether
-the Diffie-Hellman shared secret is the all-zero value and abort if so.
+For Edwards25519 and Edwards448, public keys need not be validated as the 
+arithmetic formulas are complete obviating the need for validation
+(c.f. {{?RFC8032}}. HOwever, recipients MUST check whether the Diffie-Hellman shared
+secret is the all-zero value and abort if so.
 
 ## Key Derivation Functions (KDFs) {#kdf-ids}
 
