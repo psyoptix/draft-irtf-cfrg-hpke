@@ -376,8 +376,9 @@ and {{encryption-context}} for details.
 ## DH-Based KEM {#dhkem}
 
 Suppose we are given a KDF, and the following interface to a cyclic group `G` (and hash 
-function `Hash`). Implementations of this interface based on the P-256 and Edwards25519 
-curves can be found in {{ciphersuites}}.
+function `Hash`). Implementations of this interface based on the P-256, P-384 and the
+P-521 family of NIST curves as well as the Edwards25519 and Edwards448 curves can be 
+found in {{ciphersuites}}.
 
 * Data Types:
   - element of field `F` : finite field of "scalars".
@@ -923,6 +924,23 @@ def OpenAuthPSK(enc, skR, info, aad, ct, psk, psk_id, pkS):
 | 0x0020 | DHKEM(Edwards25519, HKDF-SHA256) | 32       | 32   | 64    | 32  | 32  | {{?RFC7748}}, {{?RFC5869}}   |
 | 0x0021 | DHKEM(Eddwards448, HKDF-SHA512)  | 64       | 56   | 112   | 56  | 56  | {{?RFC7748}}, {{?RFC5869}}   |
 
+### Cyclic Groups from NIST Elliptic Curves
+
+The interface to a cyclic group used by DHKEM can be instantiated using the NIST curves
+P-256, P-384 or P-521 as in {{NISTCurves}}. For example, when using P-256 the field `F`
+of scalars are the set of integers modulo `p` as defined in Appendix D of {{NISTCurves}}.
+The same document defines the group `G` of curve points, the generator `B` and all other
+constants and arithmetic operators making up the interface used by DHKEM. 
+
+Key generation is described in Section B.4 of {{NISTCurves}}. Deserialization and
+Serialization of scalars are described in Sections C.2.1 and C.2.2 of {{NISTCurves}}.
+Deserialization/Serialization of points are simply the identity function as for these
+curves points are already represented as strings. Finally, `DeriveKeyPair` is described
+in section {{derive-key-pair}}.
+
+
+## Cycle Groups from Edwards Curves
+
 ### Serialize/Deserialize
 
 For P-256, P-384 and P-521, the `Serialize()` function of the
@@ -1022,7 +1040,7 @@ for the KDFs defined in this document, as inclusive bounds in bytes:
 | Input            | HKDF-SHA256  | HKDF-SHA384   | HKDF-SHA512   |
 |:-----------------|:-------------|:--------------|:--------------|
 | psk              | 2^{61} - 91  | 2^{125} - 155 | 2^{125} - 155 |
-| psk_id            | 2^{61} - 93  | 2^{125} - 157 | 2^{125} - 157 |
+| psk_id           | 2^{61} - 93  | 2^{125} - 157 | 2^{125} - 157 |
 | info             | 2^{61} - 92  | 2^{125} - 156 | 2^{125} - 156 |
 | exporter_context | 2^{61} - 121 | 2^{125} - 201 | 2^{125} - 217 |
 
