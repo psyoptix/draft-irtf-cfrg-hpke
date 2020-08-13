@@ -605,9 +605,7 @@ property that they are only known to the holder of the recipient private
 key, and the entity that used the KEM to generate `shared_secret` and `enc`.
 
 In the Auth and AuthPSK modes, the recipient is assured that the sender
-held the private key `skS`. This assurance is limited for the DHKEM
-variants defined in this document because of key-compromise impersonation,
-as described in {{dhkem}} and {{sec-properties}}. If in the PSK and
+held the private key `skS`. If in the PSK and
 AuthPSK modes, the `psk` and `psk_id` arguments are provided as required,
 then the recipient is assured that the sender held the corresponding
 pre-shared key. See {{sec-properties}} for more details.
@@ -1118,19 +1116,7 @@ In the Auth mode, sender authentication is generally expected to hold if
 the sender private key `skS` is not compromised at the time of message
 reception. In the AuthPSK mode, sender authentication is generally
 expected to hold if at the time of message reception, the sender private
-key skS and the pre-shared key are not both compromised. However, it is
-important to note that the DHKEM variants defined in this document are
-vulnerable to key-compromise impersonation attacks {{?BJM97=DOI.10.1007/BFb0024447}},
-which means that sender authentication cannot be expected to hold in the
-Auth mode if the recipient private key `skR` is compromised, and in the
-AuthPSK mode if the pre-shared key and the recipient private key `skR` are
-both compromised. NaCl's `box` interface {{NaCl}} has the same issue. At
-the same time, this enables repudiability.
-
-Applications that require resistance against key-compromise impersonation
-SHOULD take extra steps to prevent this attack. One possibility is to
-produce a digital signature over the Auth and AuthPSK `enc` output using
-a sender's private key, as a proof of possession.
+key skS and the pre-shared key are not both compromised.
 
 Given these properties, pre-shared keys strengthen both the authentication and the
 secrecy properties in certain adversary models. One particular example in which
