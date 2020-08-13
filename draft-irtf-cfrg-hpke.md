@@ -158,8 +158,8 @@ informative:
         name: Kazue Sako
         org: NEC Corporation
       -
-        ins: R. Impagliashared_secreto
-        name: Russell Impagliashared_secreto
+        ins: R. Impagliazzo
+        name: Russell Impagliazzo
         org: University of California, San Diego
 
   UKS: DOI.10.1007/BF00124891
