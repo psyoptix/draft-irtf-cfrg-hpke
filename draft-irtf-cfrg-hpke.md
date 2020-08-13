@@ -443,25 +443,23 @@ def GenerateKeyPair():
 
 def Encap(pkR):
   skE, pkE = GenerateKeyPair()
-  dh = skE . pkR
+  dh = SerializePoint(skE . pkR)
   enc = SerializePoint(pkE)
   pkRm = SerializePoint(pkR)
-  ikm = encap_string || \
-           SerializePoint(dh)  || \
-           enc || \
-           pkRm
-  shared_secret = ExtractAndExpand(ikm, "")
+  kem_context = encap_string || \
+                enc || \
+                pkRm
+  shared_secret = ExtractAndExpand(dh, kem_context)
   return shared_secret, enc
 
 def Decap(enc, skR):
   pkE = DeserializePoint(enc)
-  dh = skR . pkE
+  dh = SerializePoint(skR . pkE)
   pkRm = SerializePoint(pk(skR))
-  ikm = encap_string || \
-        SerializePoint(dh)  || \
-        enc || \
-        pkRm
-  shared_secret = ExtractAndExpand(ikm, "")
+  kem_context = encap_string || \
+                enc || \
+                pkRm
+  shared_secret = ExtractAndExpand(dh, kem_context)
   return shared_secret
 
 def AuthEncap(pkR, skS)
