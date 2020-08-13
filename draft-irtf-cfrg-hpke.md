@@ -388,7 +388,7 @@ found in {{ciphersuites}}.
   - `B` : generator of group `G`
   - `2n` : length in bytes (rounded to nearest even integer) of encoding of a field
   element in `F`
-  - `Np` : length, in bytes, of a point encoded as an byte string
+  - `Np` : length, in bytes, of a point encoded as a byte string
   - `hLen` : length, in bytes, of hash function's output
 
 * Arithmetic Operators:
