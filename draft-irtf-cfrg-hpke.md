@@ -386,7 +386,7 @@ found in {{ciphersuites}}.
 
 * Constants:
   - `B` : generator of group `G`
-  - `2n` : length in bytes (rounded to nearest even integer) of encoding of a field
+  - `Nf` : length in bytes (rounded to nearest even integer) of encoding of a field
   element in `F`
   - `Np` : length, in bytes, of a point encoded as a byte string
   - `hLen` : length, in bytes, of hash function's output
@@ -424,9 +424,9 @@ defined in this document.
 
 * Parameters:
   - `Npk = Np`: length in bytes of serialized public key
-  - `Nsk = 2n`: length in bytes of serialized secret key
+  - `Nsk = Nf`: length in bytes of serialized secret key
   - `Nenc = Np`: length in bytes of ciphertext produced by `Encap()`
-  - `Naenc = Np + 2n`: length in bytes of ciphertext produced by `AuthEncap()`
+  - `Naenc = Np + Nf`: length in bytes of ciphertext produced by `AuthEncap()`
 
 * Algorithms:
 
@@ -476,7 +476,7 @@ def AuthEncap(pkR, skS)
   shared_secret = ExtractAndExpand(ikm, "")
   h = OS2IP( Hash(ikm) )
   sig = skE ++ skS ** h
-  sig_s = I2OSP(sig, 2n)
+  sig_s = I2OSP(sig, Nf)
   enc = SerializePoint(pkE) || sig_s
   return shared_secret, enc
 
