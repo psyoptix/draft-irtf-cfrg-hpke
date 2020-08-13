@@ -477,21 +477,19 @@ def AuthDecap(enc, skR, pkS)
   sig = OS2IP(sig_s)
   pkE = DeserializePoint(pkEm)
 
-  pkRm = SerializePoint(pk(skR))
-  pkSm = SerializePoint(pkS)
-
   dh = SerializePoint(skR . pkE)
 
+  pkRm = SerializePoint(pk(skR))
   sig_context = concat(pkEm, pkRm)
   h_s = ExtractAndExpand(dh, "sig", sig_context, Nf)
   h = OS2IP(h_s)
 
-  kem_context = concat(enc, pkRm, pkSm)
-  shared_secret = ExtractAndExpand(dh, "shared_secret", kem_context, Nsecret)
-
   lside = sig . B
   rside = pkE + (h . pkS)
   if lside == rside then
+    pkSm = SerializePoint(pkS)
+    kem_context = concat(enc, pkRm, pkSm)
+    shared_secret = ExtractAndExpand(dh, "shared_secret", kem_context, Nsecret)
     return shared_secret
   else
     raise AuthDecapsError
