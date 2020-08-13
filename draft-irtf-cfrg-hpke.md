@@ -386,10 +386,10 @@ found in {{ciphersuites}}.
 
 * Constants:
   - `B` : generator of group `G`
-  - `2n` : length in octets (rounded to nearest even integer) of encoding of a field
+  - `2n` : length in bytes (rounded to nearest even integer) of encoding of a field
   element in `F`
-  - `Np` : length, in octets, of a point encoded as an octet string
-  - `hLen` : length, in octets, of hash function's output
+  - `Np` : length, in bytes, of a point encoded as an byte string
+  - `hLen` : length, in bytes, of hash function's output
 
 * Arithmetic Operators:
   - `+` : point/point addition : `G x G -> G`
@@ -401,12 +401,12 @@ found in {{ciphersuites}}.
 * Type Conversion Algorithms:
   - `I2OSP(a_c, len)` : converts scalar `a` to byte string of `len` bytes
   - `OS2IP(a_s)` : converts a byte string `a_s` to a scalar
-  - `SerializePoint(a)` : converts point to string of `Np` octets
-  - `DeserializePoint(a_s)` : converts string of `Np` octets to point
-    Returns INVALID if the octet string does not convert to a valid point
+  - `SerializePoint(a)` : converts point to string of `Np` bytes
+  - `DeserializePoint(a_s)` : converts string of `Np` bytes to point
+    Returns INVALID if the byte string does not convert to a valid point
 
 * Functions:
-  - `Hash(x)`: cryptographic hash outputing strings of `hLen` octets
+  - `Hash(x)`: cryptographic hash outputing strings of `hLen` bytes
   - `sk_gen()`: returns fresh uniform random secret key scalar
   - `pk(sk)`: maps secret key `sk` to its public key
   - `DeriveKeyPair(ikm)`: deterministically derives key pair from ikm. (Implemented
@@ -421,15 +421,15 @@ The function parameters `pkR` and `pkS` are deserialized public keys (i.e. point
 defined in this document.
 
 * Constants used internally by DHKEM:
-  - `zero_string = 0x00 = I2OSP(0,1)` : an octet with value `0`
-  - `encap_string = 0x10 = I2OSP(8,1)` : an octet with value `8`
-  - `authencap_string = 0x11 = I2OSP(9,1)` : an octet with value `9`
+  - `zero_string = 0x00 = I2OSP(0,1)` : an byte with value `0`
+  - `encap_string = 0x10 = I2OSP(8,1)` : an byte with value `8`
+  - `authencap_string = 0x11 = I2OSP(9,1)` : an byte with value `9`
 
 * Parameters:
-  - `Npk = Np`: length in octets of serialized public key
-  - `Nsk = 2n`: length in octets of serialized secret key
-  - `Nenc = Np`: length in octets of ciphertext produced by `Encap()`
-  - `Naenc = Np + 2n`: length in octets of ciphertext produced by `AuthEncap()`
+  - `Npk = Np`: length in bytes of serialized public key
+  - `Nsk = 2n`: length in bytes of serialized secret key
+  - `Nenc = Np`: length in bytes of ciphertext produced by `Encap()`
+  - `Naenc = Np + 2n`: length in bytes of ciphertext produced by `AuthEncap()`
 
 * Algorithms:
 
@@ -955,7 +955,7 @@ found in Section 5.1.4. That section also includes an optimized algorithm for th
 case of point doubling.
 
 Key generation is described in Section 5.1.5 of {{?RFC8032}}. In particular, a secret
-key is sampled as a 32-octet uniform random string. The section describes how to map
+key is sampled as a 32-byte uniform random string. The section describes how to map
 such a string to its public key.
 
 Algorithms to encode points and scalars as strings are given in Section 5.1.2 of
