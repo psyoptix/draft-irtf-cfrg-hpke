@@ -388,7 +388,7 @@ found in {{ciphersuites}}.
   - `B` : generator of group `G`
   - `2n` : length in octets (rounded to nearest even integer) of encoding of a field
   element in `F`
-  - `ptLen` : length, in octets, of a point encoded as an octet string
+  - `Np` : length, in octets, of a point encoded as an octet string
   - `hLen` : length, in octets, of hash function's output
 
 * Arithmetic Operators:
@@ -401,8 +401,8 @@ found in {{ciphersuites}}.
 * Type Conversion Algorithms:
   - `int_to_string(a_c, len)` : converts scalar `a` to string of `len` octets
   - `string_to_int(a_s)` : converts an octet string `a_string` to scalar
-  - `point_to_string(a)` : converts point to string of `ptLen` octets
-  - `string_to_point(a_s)` : converts string of `ptLen` octets to point
+  - `point_to_string(a)` : converts point to string of `Np` octets
+  - `string_to_point(a_s)` : converts string of `Np` octets to point
     Returns INVALID if the octet string does not convert to a valid point
 
 * Functions:
@@ -426,10 +426,10 @@ defined in this document.
   - `authencap_string = 0x11 = int_to_string(9,1)` : an octet with value `9`
 
 * Parameters:
-  - `Npk = ptLen`: length in octets of serialized public
+  - `Npk = Np`: length in octets of serialized public
   - `Nsk = 2n`: length in octets of serialized secret key
-  - `Nenc = ptLen`: length in octets of ciphertext produced by `Encap()`
-  - `Naenc = ptLen + 2n`: length in octets of ciphertext produced by `AuthEncap()`
+  - `Nenc = Np`: length in octets of ciphertext produced by `Encap()`
+  - `Naenc = Np + 2n`: length in octets of ciphertext produced by `AuthEncap()`
 
 * Algorithms:
 
