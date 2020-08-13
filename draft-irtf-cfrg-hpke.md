@@ -399,8 +399,6 @@ found in {{ciphersuites}}.
   - `||` : string concatenation
 
 * Type Conversion Algorithms:
-  - `I2OSP(a_c, len)` : converts scalar `a` to byte string of `len` bytes
-  - `OS2IP(a_s)` : converts a byte string `a_s` to a scalar
   - `SerializePoint(a)` : converts point to string of `Np` bytes
   - `DeserializePoint(a_s)` : converts string of `Np` bytes to point
     Returns INVALID if the byte string does not convert to a valid point
