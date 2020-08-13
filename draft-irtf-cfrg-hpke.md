@@ -375,33 +375,30 @@ and {{encryption-context}} for details.
 
 ## DH-Based KEM {#dhkem}
 
-Suppose we are given a KDF, and the following interface to a cyclic group `G` (and hash
-function `Hash`). Implementations of this interface based on the P-256, P-384 and the
-P-521 family of NIST curves as well as the Edwards25519 and Edwards448 curves can be
-found in {{ciphersuites}}.
+Suppose we are given a KDF, and the following interface to a cyclic group `G`. Implementations of this interface based on the P-256, P-384 and the
+P-521 family of NIST curves as well as the Edwards25519 and Edwards448 curves are described in in {{ciphersuites}}.
 
 * Data Types:
-  - element of field `F` : finite field of "scalars".
-  - element of group `G` : additive group of "points" over `F`.
+  - element of field `F` : finite field of “scalars”.
+  - element of group `G` : additive group of “points” over `F`.
 
 * Constants:
   - `B` : generator of group `G`
-  - `Nf` : length in bytes (rounded to nearest even integer) of encoding of a field
-  element in `F`
-  - `Np` : length, in bytes, of a point encoded as a byte string
-  - `hLen` : length, in bytes, of hash function's output
+  - `Nf` : length in bytes (rounded to nearest even integer) of a field
+    element in `F` encoded as a byte string
+  - `Np` : length in bytes of a point encoded as a byte string
 
 * Arithmetic Operators:
   - `+` : point/point addition : `G x G -> G`
   - `.` : scalar/point multiplication : `F x G -> G`
   - `++` : scalar/scalar addition : `F x F -> F`
   - `**` : scalar/scalar multiplication : `F x F -> F`
-  - `||` : string concatenation
 
 * Type Conversion Algorithms:
-  - `SerializePoint(a)` : converts point to string of `Np` bytes
-  - `DeserializePoint(a_s)` : converts string of `Np` bytes to point
-    Returns INVALID if the byte string does not convert to a valid point
+  - `SerializePoint(a)` : converts a point `a` to string of `Np` bytes
+  - `DeserializePoint(str)` : converts a string `str` of length `Np`
+    bytes to a point. (note: this function can raise an error if the
+    byte string does not convert to a valid point)
 
 * Functions:
   - `sk_gen()`: returns a fresh uniform random secret key scalar
@@ -420,10 +417,10 @@ The function parameters `pkR` and `pkS` are deserialized public keys (i.e. point
 defined in this document.
 
 * Parameters:
-  - `Npk = Np`: length in bytes of serialized public key
-  - `Nsk = Nf`: length in bytes of serialized secret key
-  - `Nenc = Np`: length in bytes of ciphertext produced by `Encap()`
-  - `Naenc = Np + Nf`: length in bytes of ciphertext produced by `AuthEncap()`
+  - `Npk = Np`: length in bytes of a serialized public key
+  - `Nsk = Nf`: length in bytes of a serialized secret key
+  - `Nenc = Np`: length in bytes of a KEM ciphertext produced by `Encap()`
+  - `Naenc = Np + Nf`: length in bytes of a KEM ciphertext produced by `AuthEncap()`
 
 * Algorithms:
 
@@ -938,15 +935,15 @@ Some deserialized public keys MUST be validated before they can be used. See
 {{validation}} for specifics.
 
 
-## Cycle Groups from Edwards Curves
+### Cyclic Groups from Edwards Curves
 
-The interface to a cyclic group used by DHKEM can also be instatiated using curves
-Edwards25519 and Eddwards448 as in {{?RFC8032}}.
+The interface to a cyclic group used by DHKEM can also be instatiated using
+the curves Edwards25519 and Edwards448 as in {{?RFC8032}}.
 
 For Edwards25519 the field of scalars `F` and the group of curve points (and the
 generator `B`) are defined using the constants in Table 1 of {{?RFC8032}}. For example
 `F` are the integers modulo prime `p = 2^255-19`. The addition and multiplication of two
-scalars is defined in Section 5.1.5 of {{?RFC8032}} while the addition two points can be
+scalars is defined in Section 5.1.5 of {{?RFC8032}}, while the addition of two points can be
 found in Section 5.1.4. That section also includes an optimized algorithm for the special
 case of point doubling.
 
@@ -1020,8 +1017,8 @@ correct range, that the point is on the curve, and that the point is not the
 point at infinity. Additionally, senders and recipients MUST ensure the
 Diffie-Hellman shared secret is not the point at infinity.
 
-For Edwards25519 and Edwards448, public keys need not be validated as the
-arithmetic formulas are complete obviating the need for validation (c.f. {{?RFC8032}}.
+For Edwards25519 and Edwards448, public keys do not need to be validated as the
+arithmetic formulas are completely obviating the need for validation (c.f. {{?RFC8032}}.
 However, recipients MUST check whether the Diffie-Hellman shared secret is the all-zero
 value and abort if so.
 
@@ -1335,7 +1332,7 @@ empty plaintext value and the content to be signed as AAD.  This produces an
 encoded key `enc` and a ciphertext value that contains only the AAD tag.
 
 For example, using DHKEM(Edwards25519, HKDF-SHA256) and AES-128-GCM, this would produce
-a 80-byte signature comprising a 64-byte AuthEncap ciphertext and a 16-byte GCM tag.
+an 80-byte signature comprising a 64-byte AuthEncap ciphertext and a 16-byte GCM tag.
 
 To verify such a signature, the recipient performs the corresponding HPKE setup
 and calls `Open()` with the provided ciphertext.  If the AEAD authentication passes,
