@@ -399,10 +399,10 @@ found in {{ciphersuites}}.
   - `||` : string concatenation
 
 * Type Conversion Algorithms:
-  - `int_to_string(a_c, len)` : converts scalar `a` to string of `len` octets
-  - `string_to_int(a_s)` : converts an octet string `a_string` to scalar
-  - `point_to_string(a)` : converts point to string of `Np` octets
-  - `string_to_point(a_s)` : converts string of `Np` octets to point
+  - `I2OSP(a_c, len)` : converts scalar `a` to byte string of `len` bytes
+  - `OS2IP(a_s)` : converts a byte string `a_s` to a scalar
+  - `SerializePoint(a)` : converts point to string of `Np` octets
+  - `DeserializePoint(a_s)` : converts string of `Np` octets to point
     Returns INVALID if the octet string does not convert to a valid point
 
 * Functions:
@@ -421,12 +421,12 @@ The function parameters `pkR` and `pkS` are deserialized public keys (i.e. point
 defined in this document.
 
 * Constants used internally by DHKEM:
-  - `zero_string = 0x00 = int_to_string(0,1)` : an octet with value `0`
-  - `encap_string = 0x10 = int_to_string(8,1)` : an octet with value `8`
-  - `authencap_string = 0x11 = int_to_string(9,1)` : an octet with value `9`
+  - `zero_string = 0x00 = I2OSP(0,1)` : an octet with value `0`
+  - `encap_string = 0x10 = I2OSP(8,1)` : an octet with value `8`
+  - `authencap_string = 0x11 = I2OSP(9,1)` : an octet with value `9`
 
 * Parameters:
-  - `Npk = Np`: length in octets of serialized public
+  - `Npk = Np`: length in octets of serialized public key
   - `Nsk = 2n`: length in octets of serialized secret key
   - `Nenc = Np`: length in octets of ciphertext produced by `Encap()`
   - `Naenc = Np + 2n`: length in octets of ciphertext produced by `AuthEncap()`
@@ -446,24 +446,24 @@ def GenerateKeyPair():
 
 def Encap(pkR):
   skE, pkE = GenerateKeyPair()
-  enc = point_to_string(pkE)
+  enc = SerializePoint(pkE)
   dh = skE . pkR
   ikm = suite_id || \
            encap_string || \
-           point_to_string(dh)  || \
-           point_to_string(pkE) || \
-           point_to_string(pkR)
+           SerializePoint(dh)  || \
+           SerializePoint(pkE) || \
+           SerializePoint(pkR)
   shared_secret = ExtractAndExpand(ikm, zero_string)
   return shared_secret, enc
 
 def Decap(enc, skR):
-  enc_p = string_to_point(enc)
+  enc_p = DeserializePoint(enc)
   dh = skR . enc
   ikm = suite_id || \
         encap_string || \
-        point_to_string(dh)  || \
-        point_to_string(pkE) || \
-        point_to_string(pk(skR))
+        SerializePoint(dh)  || \
+        SerializePoint(pkE) || \
+        SerializePoint(pk(skR))
   shared_secret = ExtractAndExpand(ikm, zero_string)
   return shared_secret
 
@@ -472,30 +472,30 @@ def AuthEncap(pkR, skS)
   dh = skE . pkR
   ikm = suite_id || \
         authencap_string || \
-        point_to_string(dh)  || \
-        point_to_string(pkE) || \
-        point_to_string(pkR) || \
-        point_to_string(pk(skS))
+        SerializePoint(dh)  || \
+        SerializePoint(pkE) || \
+        SerializePoint(pkR) || \
+        SerializePoint(pk(skS))
   shared_secret = ExtractAndExpand(ikm, zero_string)
-  h = string_to_int( Hash(ikm) )
+  h = OS2IP( Hash(ikm) )
   sig = skE ++ skS ** h
-  sig_s = int_to_string(sig)
-  enc = point_to_string(pkE) || sig_s
+  sig_s = I2OSP(sig)
+  enc = SerializePoint(pkE) || sig_s
   return shared_secret, enc
 
 def AuthDecap(enc, skR, pkS)
   (pkE_s, sig_s) = enc
-  sig = string_to_int(sig_s)
-  pkE = string_to_point(pkE_s)
+  sig = OS2IP(sig_s)
+  pkE = DeserializePoint(pkE_s)
   dh = skR . pkE
   ikm = suite_id || \
         authencap_string || \
-        point_to_string(dh)  || \
+        SerializePoint(dh)  || \
         pkE_s || \
-        point_to_string(pk(skR)) || \
-        point_to_string(pkS)
+        SerializePoint(pk(skR)) || \
+        SerializePoint(pkS)
   shared_secret = ExtractAndExpand(ikm, zero_string)
-  h = string_to_int( Hash(ikm) )
+  h = OS2IP( Hash(ikm) )
   lside = sig . B
   rside = pkE + (h . pkS)
   if lside == rside then
