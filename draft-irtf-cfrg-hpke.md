@@ -375,9 +375,9 @@ and {{encryption-context}} for details.
 
 ## DH-Based KEM {#dhkem}
 
-Suppose we are given a KDF, and the following interface to a cyclic group `G` (and hash 
+Suppose we are given a KDF, and the following interface to a cyclic group `G` (and hash
 function `Hash`). Implementations of this interface based on the P-256, P-384 and the
-P-521 family of NIST curves as well as the Edwards25519 and Edwards448 curves can be 
+P-521 family of NIST curves as well as the Edwards25519 and Edwards448 curves can be
 found in {{ciphersuites}}.
 
 * Data Types:
@@ -402,34 +402,34 @@ found in {{ciphersuites}}.
   - `int_to_string(a_c, len)` : converts scalar `a` to string of `len` octets
   - `string_to_int(a_s)` : converts an octet string `a_string` to scalar
   - `point_to_string(a)` : converts point to string of `ptLen` octets
-  - `string_to_point(a_s)` : converts string of `ptLen` octets to point 
+  - `string_to_point(a_s)` : converts string of `ptLen` octets to point
     Returns INVALID if the octet string does not convert to a valid point
 
 * Functions:
   - `Hash(x)`: cryptographic hash outputing strings of `hLen` octets
   - `sk_gen()`: returns fresh uniform random secret key scalar
   - `pk(sk)`: maps secret key `sk` to its public key
-  - `DeriveKeyPair(ikm)`: deterministically derives key pair from ikm. (Implemented 
+  - `DeriveKeyPair(ikm)`: deterministically derives key pair from ikm. (Implemented
     in section {{derive-key-pair}}.)
 
 Then, assuming that finding the discrete log of uniform random elements of `G` is
 computationally intractible, we can  implement the KEM related cryptographic dependencies
-of HPKE from the KDF and the interface to `G` as follows. The resulting KEM is called 
-`DHKEM(Group, KDF)` where `Group` denotes the Discrete Log group and `KDF` the KDF. 
+of HPKE from the KDF and the interface to `G` as follows. The resulting KEM is called
+`DHKEM(Group, KDF)` where `Group` denotes the Discrete Log group and `KDF` the KDF.
 The function parameters `pkR` and `pkS` are deserialized public keys (i.e. points in `G`).
-{{derive-key-pair}} contains the `DeriveKeyPair` function specification for DHKEMs 
+{{derive-key-pair}} contains the `DeriveKeyPair` function specification for DHKEMs
 defined in this document.
 
 * Constants used internally by DHKEM:
   - `zero_string = 0x00 = int_to_string(0,1)` : an octet with value `0`
   - `encap_string = 0x10 = int_to_string(8,1)` : an octet with value `8`
   - `authencap_string = 0x11 = int_to_string(9,1)` : an octet with value `9`
-  
+
 * Parameters:
   - `Npk = ptLen`: length in octets of serialized public
   - `Nsk = 2n`: length in octets of serialized secret key
   - `Nenc = ptLen`: length in octets of ciphertext produced by `Encap()`
-  - `Naenc = ptLen + 2n`: length in octets of ciphertext produced by `AuthEncap()` 
+  - `Naenc = ptLen + 2n`: length in octets of ciphertext produced by `AuthEncap()`
 
 * Algorithms:
 
@@ -438,14 +438,14 @@ def ExtractAndExpand(dh, kem_context):
   eae_prk = LabeledExtract("", "eae_prk", dh)
   shared_secret = LabeledExpand(eae_prk, "shared_secret", kem_context, Nsecret)
   return shared_secret
-  
+
 def GenerateKeyPair():
   sk = sk_gen()
   pk = sk . B
   return sk, pk
 
 def Encap(pkR):
-  skE, pkE = GenerateKeyPair()  
+  skE, pkE = GenerateKeyPair()
   enc = point_to_string(pkE)
   dh = skE . pkR
   ikm = suite_id || \
@@ -468,7 +468,7 @@ def Decap(enc, skR):
   return shared_secret
 
 def AuthEncap(pkR, skS)
-  skE, pkE = GenerateKeyPair()  
+  skE, pkE = GenerateKeyPair()
   dh = skE . pkR
   ikm = suite_id || \
         authencap_string || \
@@ -930,25 +930,25 @@ The interface to a cyclic group used by DHKEM can be instantiated using the NIST
 P-256, P-384 or P-521 as in {{NISTCurves}}. For example, when using P-256 the field `F`
 of scalars are the set of integers modulo `p` as defined in Appendix D of {{NISTCurves}}.
 The same document defines the group `G` of curve points, the generator `B` and all other
-constants and arithmetic operators making up the interface used by DHKEM. 
+constants and arithmetic operators making up the interface used by DHKEM.
 
 Key generation is described in Section B.4 of {{NISTCurves}}. Deserialization and
 serialization of scalars are described in Sections C.2.1 and C.2.2 of {{NISTCurves}}.
 Deserialization/serialization of a point is simply the identity function as for points
-are already represented as strings. Finally, `DeriveKeyPair` is described in section 
+are already represented as strings. Finally, `DeriveKeyPair` is described in section
 {{derive-key-pair}}.
 
-Some deserialized public keys MUST be validated before they can be used. See 
+Some deserialized public keys MUST be validated before they can be used. See
 {{validation}} for specifics.
 
 
 ## Cycle Groups from Edwards Curves
 
-The interface to a cyclic group used by DHKEM can also be instatiated using curves 
+The interface to a cyclic group used by DHKEM can also be instatiated using curves
 Edwards25519 and Eddwards448 as in {{?RFC8032}}.
 
 For Edwards25519 the field of scalars `F` and the group of curve points (and the
-generator `B`) are defined using the constants in Table 1 of {{?RFC8032}}. For example 
+generator `B`) are defined using the constants in Table 1 of {{?RFC8032}}. For example
 `F` are the integers modulo prime `p = 2^255-19`. The addition and multiplication of two
 scalars is defined in Section 5.1.5 of {{?RFC8032}} while the addition two points can be
 found in Section 5.1.4. That section also includes an optimized algorithm for the special
@@ -958,11 +958,11 @@ Key generation is described in Section 5.1.5 of {{?RFC8032}}. In particular, a s
 key is sampled as a 32-octet uniform random string. The section describes how to map
 such a string to its public key.
 
-Algorithms to encode points and scalars as strings are given in Section 5.1.2 of 
-{{?RFC8032}} and the matching decoding algorithms are given in Section 5.1.3 of 
+Algorithms to encode points and scalars as strings are given in Section 5.1.2 of
+{{?RFC8032}} and the matching decoding algorithms are given in Section 5.1.3 of
 {{?RFC8032}}.
 
-Some deserialized public keys MUST be validated before they can be used. See 
+Some deserialized public keys MUST be validated before they can be used. See
 {{validation}} for specifics.
 
 ### DeriveKeyPair {#derive-key-pair}
@@ -1024,7 +1024,7 @@ correct range, that the point is on the curve, and that the point is not the
 point at infinity. Additionally, senders and recipients MUST ensure the
 Diffie-Hellman shared secret is not the point at infinity.
 
-For Edwards25519 and Edwards448, public keys need not be validated as the 
+For Edwards25519 and Edwards448, public keys need not be validated as the
 arithmetic formulas are complete obviating the need for validation (c.f. {{?RFC8032}}.
 However, recipients MUST check whether the Diffie-Hellman shared secret is the all-zero
 value and abort if so.
