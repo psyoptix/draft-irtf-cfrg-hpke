@@ -443,24 +443,26 @@ def GenerateKeyPair():
 
 def Encap(pkR):
   skE, pkE = GenerateKeyPair()
-  enc = SerializePoint(pkE)
   dh = skE . pkR
+  enc = SerializePoint(pkE)
+  pkRm = SerializePoint(pkR)
   ikm = suite_id || \
            encap_string || \
            SerializePoint(dh)  || \
-           SerializePoint(pkE) || \
-           SerializePoint(pkR)
+           enc || \
+           pkRm
   shared_secret = ExtractAndExpand(ikm, "")
   return shared_secret, enc
 
 def Decap(enc, skR):
-  enc_p = DeserializePoint(enc)
-  dh = skR . enc
+  pkE = DeserializePoint(enc)
+  dh = skR . pkE
+  pkRm = SerializePoint(pk(skR))
   ikm = suite_id || \
         encap_string || \
         SerializePoint(dh)  || \
-        SerializePoint(pkE) || \
-        SerializePoint(pk(skR))
+        enc || \
+        pkRm
   shared_secret = ExtractAndExpand(ikm, "")
   return shared_secret
 
