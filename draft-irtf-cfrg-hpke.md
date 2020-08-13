@@ -421,9 +421,8 @@ The function parameters `pkR` and `pkS` are deserialized public keys (i.e. point
 defined in this document.
 
 * Constants used internally by DHKEM:
-  - `zero_string = 0x00 = I2OSP(0,1)` : an byte with value `0`
-  - `encap_string = 0x10 = I2OSP(8,1)` : an byte with value `8`
-  - `authencap_string = 0x11 = I2OSP(9,1)` : an byte with value `9`
+  - `encap_string = 0x10`
+  - `authencap_string = 0x11`
 
 * Parameters:
   - `Npk = Np`: length in bytes of serialized public key
@@ -453,7 +452,7 @@ def Encap(pkR):
            SerializePoint(dh)  || \
            SerializePoint(pkE) || \
            SerializePoint(pkR)
-  shared_secret = ExtractAndExpand(ikm, zero_string)
+  shared_secret = ExtractAndExpand(ikm, "")
   return shared_secret, enc
 
 def Decap(enc, skR):
@@ -464,7 +463,7 @@ def Decap(enc, skR):
         SerializePoint(dh)  || \
         SerializePoint(pkE) || \
         SerializePoint(pk(skR))
-  shared_secret = ExtractAndExpand(ikm, zero_string)
+  shared_secret = ExtractAndExpand(ikm, "")
   return shared_secret
 
 def AuthEncap(pkR, skS)
@@ -476,7 +475,7 @@ def AuthEncap(pkR, skS)
         SerializePoint(pkE) || \
         SerializePoint(pkR) || \
         SerializePoint(pk(skS))
-  shared_secret = ExtractAndExpand(ikm, zero_string)
+  shared_secret = ExtractAndExpand(ikm, "")
   h = OS2IP( Hash(ikm) )
   sig = skE ++ skS ** h
   sig_s = I2OSP(sig, 2n)
@@ -494,7 +493,7 @@ def AuthDecap(enc, skR, pkS)
         pkE_s || \
         SerializePoint(pk(skR)) || \
         SerializePoint(pkS)
-  shared_secret = ExtractAndExpand(ikm, zero_string)
+  shared_secret = ExtractAndExpand(ikm, "")
   h = OS2IP( Hash(ikm) )
   lside = sig . B
   rside = pkE + (h . pkS)
