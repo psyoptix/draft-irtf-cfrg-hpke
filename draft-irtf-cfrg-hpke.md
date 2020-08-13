@@ -446,8 +446,7 @@ def Encap(pkR):
   dh = skE . pkR
   enc = SerializePoint(pkE)
   pkRm = SerializePoint(pkR)
-  ikm = suite_id || \
-           encap_string || \
+  ikm = encap_string || \
            SerializePoint(dh)  || \
            enc || \
            pkRm
@@ -458,8 +457,7 @@ def Decap(enc, skR):
   pkE = DeserializePoint(enc)
   dh = skR . pkE
   pkRm = SerializePoint(pk(skR))
-  ikm = suite_id || \
-        encap_string || \
+  ikm = encap_string || \
         SerializePoint(dh)  || \
         enc || \
         pkRm
@@ -469,8 +467,7 @@ def Decap(enc, skR):
 def AuthEncap(pkR, skS)
   skE, pkE = GenerateKeyPair()
   dh = skE . pkR
-  ikm = suite_id || \
-        authencap_string || \
+  ikm = authencap_string || \
         SerializePoint(dh)  || \
         SerializePoint(pkE) || \
         SerializePoint(pkR) || \
@@ -487,8 +484,7 @@ def AuthDecap(enc, skR, pkS)
   sig = OS2IP(sig_s)
   pkE = DeserializePoint(pkE_s)
   dh = skR . pkE
-  ikm = suite_id || \
-        authencap_string || \
+  ikm = authencap_string || \
         SerializePoint(dh)  || \
         pkE_s || \
         SerializePoint(pk(skR)) || \
