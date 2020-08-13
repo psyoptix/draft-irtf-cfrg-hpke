@@ -479,7 +479,7 @@ def AuthEncap(pkR, skS)
   shared_secret = ExtractAndExpand(ikm, zero_string)
   h = OS2IP( Hash(ikm) )
   sig = skE ++ skS ** h
-  sig_s = I2OSP(sig)
+  sig_s = I2OSP(sig, 2n)
   enc = SerializePoint(pkE) || sig_s
   return shared_secret, enc
 
