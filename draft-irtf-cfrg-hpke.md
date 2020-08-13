@@ -446,9 +446,7 @@ def Encap(pkR):
   dh = SerializePoint(skE . pkR)
   enc = SerializePoint(pkE)
   pkRm = SerializePoint(pkR)
-  kem_context = encap_string || \
-                enc || \
-                pkRm
+  kem_context = concat(encap_string, enc, pkRm)
   shared_secret = ExtractAndExpand(dh, kem_context)
   return shared_secret, enc
 
@@ -456,9 +454,7 @@ def Decap(enc, skR):
   pkE = DeserializePoint(enc)
   dh = SerializePoint(skR . pkE)
   pkRm = SerializePoint(pk(skR))
-  kem_context = encap_string || \
-                enc || \
-                pkRm
+  kem_context = concat(encap_string, enc, pkRm)
   shared_secret = ExtractAndExpand(dh, kem_context)
   return shared_secret
 
