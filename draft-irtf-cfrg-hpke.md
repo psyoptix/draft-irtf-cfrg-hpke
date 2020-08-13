@@ -404,23 +404,20 @@ found in {{ciphersuites}}.
     Returns INVALID if the byte string does not convert to a valid point
 
 * Functions:
-  - `Hash(x)`: cryptographic hash outputing strings of `hLen` bytes
-  - `sk_gen()`: returns fresh uniform random secret key scalar
-  - `pk(sk)`: maps secret key `sk` to its public key
-  - `DeriveKeyPair(ikm)`: deterministically derives key pair from ikm. (Implemented
-    in section {{derive-key-pair}}.)
+  - `sk_gen()`: returns a fresh uniform random secret key scalar
+  - `DeriveKeyPair(ikm)`: deterministically derives a key pair from `ikm`,
+    as described in {{derive-key-pair}}.
+  - `split(str, L)`: splits the byte string `str` into two substrings,
+    the first one consisting of the `L` first bytes of `str`, and the
+    second one of the remaining bytes of `str`.
 
-Then, assuming that finding the discrete log of uniform random elements of `G` is
-computationally intractible, we can  implement the KEM related cryptographic dependencies
+Then, assuming that finding the discrete log of uniformly random elements of `G` is
+computationally intractible, we can  implement the KEM-related cryptographic dependencies
 of HPKE from the KDF and the interface to `G` as follows. The resulting KEM is called
 `DHKEM(Group, KDF)` where `Group` denotes the Discrete Log group and `KDF` the KDF.
 The function parameters `pkR` and `pkS` are deserialized public keys (i.e. points in `G`).
 {{derive-key-pair}} contains the `DeriveKeyPair` function specification for DHKEMs
 defined in this document.
-
-* Constants used internally by DHKEM:
-  - `encap_string = 0x10`
-  - `authencap_string = 0x11`
 
 * Parameters:
   - `Npk = Np`: length in bytes of serialized public key
@@ -431,10 +428,10 @@ defined in this document.
 * Algorithms:
 
 ~~~
-def ExtractAndExpand(dh, kem_context):
-  eae_prk = LabeledExtract("", "eae_prk", dh)
-  shared_secret = LabeledExpand(eae_prk, "shared_secret", kem_context, Nsecret)
-  return shared_secret
+def ExtractAndExpand(ikm, label, context, L):
+  eae_prk = LabeledExtract("", "eae_prk", ikm)
+  h = LabeledExpand(eae_prk, label, context, L)
+  return h
 
 def GenerateKeyPair():
   sk = sk_gen()
@@ -446,51 +443,61 @@ def Encap(pkR):
   dh = SerializePoint(skE . pkR)
   enc = SerializePoint(pkE)
   pkRm = SerializePoint(pkR)
-  kem_context = concat(encap_string, enc, pkRm)
-  shared_secret = ExtractAndExpand(dh, kem_context)
+  kem_context = concat(enc, pkRm)
+  shared_secret = ExtractAndExpand(dh, "shared_secret", kem_context, Nsecret)
   return shared_secret, enc
 
 def Decap(enc, skR):
   pkE = DeserializePoint(enc)
   dh = SerializePoint(skR . pkE)
   pkRm = SerializePoint(pk(skR))
-  kem_context = concat(encap_string, enc, pkRm)
-  shared_secret = ExtractAndExpand(dh, kem_context)
+  kem_context = concat(enc, pkRm)
+  shared_secret = ExtractAndExpand(dh, "shared_secret", kem_context, Nsecret)
   return shared_secret
 
 def AuthEncap(pkR, skS)
   skE, pkE = GenerateKeyPair()
-  dh = skE . pkR
-  ikm = authencap_string || \
-        SerializePoint(dh)  || \
-        SerializePoint(pkE) || \
-        SerializePoint(pkR) || \
-        SerializePoint(pk(skS))
-  shared_secret = ExtractAndExpand(ikm, "")
-  h = OS2IP( Hash(ikm) )
+  pkEm = SerializePoint(pkE)
+  pkRm = SerializePoint(pkR)
+  pkSm = SerializePoint(pk(skS))
+
+  dh = SerializePoint(skE . pkR)
+
+  sig_context = concat(pkEm, pkRm)
+  h_s = ExtractAndExpand(dh, "sig", sig_context, Nf)
+  h = OS2IP(h_s)
   sig = skE ++ skS ** h
   sig_s = I2OSP(sig, Nf)
-  enc = SerializePoint(pkE) || sig_s
+
+  enc = concat(pkEm, sig_s)
+  kem_context = concat(enc, pkRm, pkSm)
+  shared_secret = ExtractAndExpand(dh, "shared_secret", kem_context, Nsecret)
+
   return shared_secret, enc
 
 def AuthDecap(enc, skR, pkS)
-  (pkE_s, sig_s) = enc
+  (pkEm, sig_s) = split(enc, Np)
   sig = OS2IP(sig_s)
-  pkE = DeserializePoint(pkE_s)
-  dh = skR . pkE
-  ikm = authencap_string || \
-        SerializePoint(dh)  || \
-        pkE_s || \
-        SerializePoint(pk(skR)) || \
-        SerializePoint(pkS)
-  shared_secret = ExtractAndExpand(ikm, "")
-  h = OS2IP( Hash(ikm) )
+  pkE = DeserializePoint(pkEm)
+
+  pkRm = SerializePoint(pk(skR))
+  pkSm = SerializePoint(pkS)
+
+  dh = SerializePoint(skR . pkE)
+
+  sig_context = concat(pkEm, pkRm)
+  h_s = ExtractAndExpand(dh, "sig", sig_context, Nf)
+  h = OS2IP(h_s)
+
+  kem_context = concat(enc, pkRm, pkSm)
+  shared_secret = ExtractAndExpand(dh, "shared_secret", kem_context, Nsecret)
+
   lside = sig . B
   rside = pkE + (h . pkS)
   if lside == rside then
-    return ("VALID", shared_secret)
+    return shared_secret
   else
-    return "INVALID"
+    raise AuthDecapsError
 ~~~
 
 The implicit `suite_id` value used within `LabeledExtract` and
