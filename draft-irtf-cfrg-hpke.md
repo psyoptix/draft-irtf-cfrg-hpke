@@ -375,8 +375,10 @@ and {{encryption-context}} for details.
 
 ## DH-Based KEM {#dhkem}
 
-Suppose we are given a KDF, and the following interface to a cyclic group `G`. Implementations of this interface based on the P-256, P-384 and the
-P-521 family of NIST curves as well as the Edwards25519 and Edwards448 curves are described in in {{ciphersuites}}.
+Suppose we are given a KDF, and the following interface to a cyclic group `G`. 
+Implementations of this interface based on the P-256, P-384 and the P-521 family of NIST
+curves as well as the Edwards25519 and Edwards448 curves are described in
+{{ciphersuites}}.
 
 * Data Types:
   - element of field `F` : finite field of “scalars”.
@@ -384,7 +386,7 @@ P-521 family of NIST curves as well as the Edwards25519 and Edwards448 curves ar
 
 * Constants:
   - `B` : generator of group `G`
-  - `Nf` : length in bytes (rounded to nearest even integer) of a field
+  - `Nf` : length in bytes (rounded up to nearest even integer) of a field
     element in `F` encoded as a byte string
   - `Np` : length in bytes of a point encoded as a byte string
 
@@ -1016,7 +1018,7 @@ point at infinity. Additionally, senders and recipients MUST ensure the
 Diffie-Hellman shared secret is not the point at infinity.
 
 For Edwards25519 and Edwards448, public keys do not need to be validated as the
-arithmetic formulas are completely obviating the need for validation (c.f. {{?RFC8032}}.
+arithmetic formulas are complete obviating the need for validation (c.f. {{?RFC8032}}.
 However, recipients MUST check whether the Diffie-Hellman shared secret is the all-zero
 value and abort if so.
 
